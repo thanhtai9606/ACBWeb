@@ -1,12 +1,13 @@
 pc
 laptop
 linh-kien
-camera-tvbox
+camera
+tvbox-lcd
 cpu-mainboard
 apple
 internet
 may-in
 luu-tru
-loa-tai-nghe
+speaker
 phu-kien
 
