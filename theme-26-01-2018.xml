@@ -1,6 +1,73 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html expr:dir='data:blog.languageDirection' xmlns='http://www.w3.org/1999/xhtml' xmlns:b='http://www.google.com/2005/gml/b' xmlns:data='http://www.google.com/2005/gml/data' xmlns:expr='http://www.google.com/2005/gml/expr'>
+<b:if cond='data:blog.url == data:blog.homepageUrl'>
+ <script type='text/javascript'>
+ //<![CDATA[ 
+ imgr = new Array();
+ imgr[0] = "http://1.bp.blogspot.com/-7vDs5hMaDho/U268E2ecF4I/AAAAAAAADY8/RBHVTTuJrxc/w300-h140-c/no-image.png";
+ numposts1 = 5;
+ function removeHtmlTag(strx, chop) {
+ var s = strx.split("<");
+ for (var i = 0; i < s.length; i++)
+ if (s[i].indexOf(">") != -1) s[i] = s[i].substring(s[i].indexOf(">") + 1, s[i].length);
+ s = s.join("");
+ s = s.substring(0, chop - 1);
+ return s
+ }; 
+ function topnewpost(json) {
+ j = showRandomImg ? Math.floor((imgr.length + 1) * Math.random()) : 0;
+ img = new Array;
+ if (numposts1 <= json.feed.entry.length) maxpost = numposts1;
+ else maxpost = json.feed.entry.length;
+ for (var i = 0; i < maxpost; i++) {
+ var entry = json.feed.entry[i];
+ var tag = entry.category[0].term;
+ var posttitle = entry.title.$t;
+ var pcm;
+ var posturl;
+ if (i == json.feed.entry.length) break;
+ for (var k = 0; k < entry.link.length; k++)
+ if (entry.link[k].rel == "alternate") {
+ posturl = entry.link[k].href;
+ break
+ }
+ for (var k = 0; k < entry.link.length; k++)
+ if (entry.link[k].rel == "replies" && entry.link[k].type == "text/html") {
+ pcm = entry.link[k].title.split(" ")[0];
+ break
+ }
+ if ("content" in entry) var postcontent = entry.content.$t;
+ else if ("summary" in entry) var postcontent = entry.summary.$t;
+ else var postcontent = "";
+ postdate = entry.published.$t;
+ if (j > imgr.length - 1) j = 0;
+ img[i] = imgr[j];
+ s = postcontent;
+ a = s.indexOf("<img");
+ b = s.indexOf('src="', a);
+ c = s.indexOf('"', b + 5);
+ d = s.substr(b + 5, c - b - 5);
+ if (a != -1 && (b != -1 && (c != -1 && d != ""))) img[i] = d;
+ var month = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+ var month2 = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+ var day = postdate.split("-")[2].substring(0, 2);
+ var m = postdate.split("-")[1];
+ var y = postdate.split("-")[0];
+ for (var u2 = 0; u2 < month.length; u2++)
+ if (parseInt(m) == month[u2]) {
+ m = month2[u2];
+ break
+ }
+ var daystr = day + " " + m + " " + y;
+ var trtd = '<div class="scroll-item secondary-post col-post"><a class="hover_play_small" href="' + posturl + '"><img src="' + img[i] + '"></img></a><header><h3><a href="' + posturl + '">' + posttitle + "</a></h3></header></div>";
+ document.write(trtd);
+ j++
+ }
+ };
+ //]]>
+ </script>
+</b:if>
 <head>
 <meta content='initial-scale=1, width=device-width, maximum-scale=1, minimum-scale=1, user-scalable=no' name='viewport'/>
 <b:include data='blog' name='all-head-content'/>
@@ -52,6 +119,31 @@ body#layout .Blog .widget-content{height:18em!important}
 .post h1, .post h3 {}
 .post h1 a, .post h1 a:visited, .post h3 a, .post h3 a:visited {}
 .post h1 a:hover, .post h3 a:hover {}
+
+#topnewpost {
+ margin-bottom: 20px;
+ float: left;
+ width: 100%
+}
+.scroll-item {
+ width: 32.3333333%;
+ float: left;
+ margin-right: 1.5%;
+ position: relative;
+}
+.scroll-item a {
+ color: #fff;
+}
+.scroll-item header {
+ position: absolute;
+ padding: 5px 10px;
+ bottom: 4px;
+ background: rgba(2,2,2,0.72);
+ width: 100%;
+}
+.scroll-item h3 {
+ font-size: 17px;
+}
 ]]></b:skin>
 
 <style>
@@ -694,7 +786,7 @@ h3.lmname a.lmhref:hover{text-decoration:underline}
 #header .div0{float:left;position:relative;height:68px}
 #header .div1{float:left;overflow:hidden;width:220px;text-align:center;height:70px}
 #header .div1 .logo{width:100%}
-#header .div1 .logo img{height:auto;display:block}
+#header .div1 .logo img{height:75px;display:block; border-radius: 50px;}
 #header .div1 .logo a{display:block}
 #header .div2{float:right;width:685px;height:68px}
 .key-search{width:100%;float:left;margin-top:5px;font-size:13px;margin-left:40px}
@@ -706,7 +798,7 @@ h3.lmname a.lmhref:hover{text-decoration:underline}
   display:block;position:absolute;right:0;border:none;top:0;font-weight:bold;background-color:#4e69a2;color:#fff;border-radius:0 3px 3px 0}
 .search input{border-radius:0 3px 3px 0;border:none;margin:0;padding:0 0 0 5px;height:34px;width:600px;margin-left:40px;background:#fff;-webkit-transition:all .4s ease;-moz-transition:all .4s ease;-o-transition:all .4s ease;transition:all .4s ease;border:1px solid #4e69a2}
 #header .div3{width:110px;border-radius:3px;float:left;padding:0 0 0 5px}
-#header .div4{margin-left:25px;width:140px;float:left;padding:0 0 0 5px}
+#header .div4{margin-left:25px;width:150px;float:left;padding:0 0 0 5px}
 #header .div4 span{display:table-cell;vertical-align:middle;text-align:center;font-size:12px;color:gray}
 #header .div4 strong{color:#d41212;font-weight:bold;font-size:18px;line-height:24px;text-align:center}
 #header .div4 .fack{color:red!important;width:36px;border-radius:20px;border:1px solid red}
@@ -1121,9 +1213,9 @@ li.lli-qc{float:left!important;position:relative!important;background:#fff;margi
 .iconlct.giam600k,.iconlct.20pt,.iconlct.30pt,.iconlct.40pt,.iconlct.50pt{background:#DD0000}
 /*home*/
 #ct_home #content.ct_slide{margin-left:230px;height:360px;margin-bottom:0;margin-top:10px}
-.slideshow{margin-bottom:10px;width:682px;height:265px;position:relative;text-align:center;overflow:hidden;z-index:0;float:left;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;-ms-box-sizing:border-box;box-sizing:border-box}
+.slideshow{margin-bottom:10px;width:682px;height:430px;position:relative;text-align:center;overflow:hidden;z-index:0;float:left;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;-ms-box-sizing:border-box;box-sizing:border-box}
 .slideshow a{border:0;display:block}
-.nivoSlider{width:100%;height:265px;overflow:hidden;position:relative}
+.nivoSlider{width:100%;height:430px;overflow:hidden;position:relative}
 .nivoSlider img{position:absolute;top:0;left:0;display:none;width:100%}
 .nivoSlider a.nivo-imageLink{position:absolute;top:0;left:0;width:100%;height:100%;border:0;padding:0;margin:0;z-index:6;display:none}
 .nivo-slice{display:block;position:absolute;z-index:5;height:100%}
@@ -1233,7 +1325,7 @@ a.icon-net:hover{color:#fff!important}
 .sanpham li.active_sp a img{border:1px solid red}
 table.table-all{border-collapse:collapse;width:100%;border:1px solid #ccc}
 table.table-all  td,table.table-all  th{padding:5px;border:1px solid #ccc}
-.keywork {float: right;margin: 10px 0;}
+.keywork {float: right;margin: 10px 0; color: #d01a1a; font-weight: bold;}
 </style>
 <style>
 .menuxx{position:absolute;top:160px;left:0;text-align:center;padding:8px 11px;color:#fff;background-color:#4e69a2;font-weight:400;font-size:18px;line-height:22px;cursor:pointer;z-index:9999;transition:background-color .3s ease 0s}
@@ -1269,7 +1361,12 @@ ul.submenu1{background:url(&quot;http://4.bp.blogspot.com/-e9iiKXCwY44/Vmp8Z7vzA
 ul.submenu2{background:url(&quot;http://1.bp.blogspot.com/-rRy--ow4DT8/Vmp8Y7UrmEI/AAAAAAAAFJU/g2EZn3LhB7w/s1600/apple-devices.png&quot;) #fff no-repeat bottom right;min-height:185px;overflow:hidden;z-index:999;position:absolute;width:700px;margin:-37px 0 0 220px;;display:none;border-top:1px solid #dfdfdf;border-right:1px solid #dfdfdf;border-bottom:1px solid #dfdfdf}
 ul.submenu3{background:url(&quot;http://1.bp.blogspot.com/-pB8-xR8zdYQ/Vmp8Y-Lr-iI/AAAAAAAAFJQ/To4G6jF-bZo/s1600/laptop.png&quot;) #fff no-repeat bottom right;min-height:185px;overflow:hidden;z-index:999;position:absolute;width:700px;margin:-37px 0 0 220px;;display:none;border-top:1px solid #dfdfdf;border-right:1px solid #dfdfdf;border-bottom:1px solid #dfdfdf}
 ul.submenu4{background:#fff;min-height:185px;overflow:hidden;z-index:999;position:absolute;width:700px;margin:-37px 0 0 220px;;display:none;border-top:1px solid #dfdfdf;border-right:1px solid #dfdfdf;border-bottom:1px solid #dfdfdf}
-ul.menuleft li:hover ul.submenu,ul.menuleft li:hover ul.submenu1,ul.menuleft li:hover ul.submenu2,ul.menuleft li:hover ul.submenu3,ul.menuleft li:hover ul.submenu4{display:block;border-left:1px solid #ccc}
+ul.submenu5{background:url(&quot;http://1.bp.blogspot.com/-pB8-xR8zdYQ/Vmp8Y-Lr-iI/AAAAAAAAFJQ/To4G6jF-bZo/s1600/laptop.png&quot;) #fff no-repeat bottom right;min-height:185px;overflow:hidden;z-index:999;position:absolute;width:700px;margin:-37px 0 0 220px;;display:none;border-top:1px solid #dfdfdf;border-right:1px solid #dfdfdf;border-bottom:1px solid #dfdfdf}
+ul.submenu6{background:url(&quot;http://1.bp.blogspot.com/-pB8-xR8zdYQ/Vmp8Y-Lr-iI/AAAAAAAAFJQ/To4G6jF-bZo/s1600/laptop.png&quot;) #fff no-repeat bottom right;min-height:185px;overflow:hidden;z-index:999;position:absolute;width:700px;margin:-37px 0 0 220px;;display:none;border-top:1px solid #dfdfdf;border-right:1px solid #dfdfdf;border-bottom:1px solid #dfdfdf}
+ul.submenu7{background:url(&quot;http://1.bp.blogspot.com/-pB8-xR8zdYQ/Vmp8Y-Lr-iI/AAAAAAAAFJQ/To4G6jF-bZo/s1600/laptop.png&quot;) #fff no-repeat bottom right;min-height:185px;overflow:hidden;z-index:999;position:absolute;width:700px;margin:-37px 0 0 220px;;display:none;border-top:1px solid #dfdfdf;border-right:1px solid #dfdfdf;border-bottom:1px solid #dfdfdf}
+ul.submenu8{background:url(&quot;http://1.bp.blogspot.com/-pB8-xR8zdYQ/Vmp8Y-Lr-iI/AAAAAAAAFJQ/To4G6jF-bZo/s1600/laptop.png&quot;) #fff no-repeat bottom right;min-height:185px;overflow:hidden;z-index:999;position:absolute;width:700px;margin:-37px 0 0 220px;;display:none;border-top:1px solid #dfdfdf;border-right:1px solid #dfdfdf;border-bottom:1px solid #dfdfdf}
+ul.submenu9{background:url(&quot;https://lh3.googleusercontent.com/-Ad2Ju1Za8Ug/WjfPHtr_cRI/AAAAAAAAAY4/nz8niqz6F1AXICbqbpOjJUm4upnRd5newCEwYBhgL/s0/storage.png&quot;) #fff no-repeat bottom right;min-height:185px;overflow:hidden;z-index:999;position:absolute;width:700px;margin:-37px 0 0 220px;;display:none;border-top:1px solid #dfdfdf;border-right:1px solid #dfdfdf;border-bottom:1px solid #dfdfdf}
+ul.menuleft li:hover ul.submenu,ul.menuleft li:hover ul.submenu1,ul.menuleft li:hover ul.submenu2,ul.menuleft li:hover ul.submenu3,ul.menuleft li:hover ul.submenu4,ul.menuleft li:hover ul.submenu9{display:block;border-left:1px solid #ccc}
 .submenu-col{float:left;width:150px;margin-bottom:20px;padding:15px 0 0 20px}
 .submenu-col1{float:left;width:150px;margin-bottom:20px;padding:15px 0}
 h2.dungcpt-nsm-title a{background:transparent!important}
@@ -1727,9 +1824,9 @@ function Cart() {
     e.shippingCost = 0;
     e.currency = VND;
     e.checkoutTo = PayPal;
-    e.email = "designertuan95@gmail.com";
+    e.email = "thanhtai42@gmail.com";
     e.merchantId = "";
-    e.successUrl = "http://templatemyphamdep.blogspot.com/";
+    e.successUrl = "https://websacbcomputer.blogspot.com";
     e.cancelUrl = null;
     e.entry = "";
     e.entryURL = "";
@@ -3077,7 +3174,7 @@ else if (typeof Prototype !== "undefined") Event.observe(window, "load", functio
 }(document, &#39;script&#39;, &#39;facebook-jssdk&#39;));</script>
 <div class='loading-cart' id='loading-cart'><img src='http://www.hieuhien.vn/images/loading2.gif' style='width:50px;'/></div>
 <div id='container'>
-<div id='taskbar'> <div class='bg-taskbar'> <div class='taskbar'> <div class='hotline'> <p/><h5><span style='color:#FEF51B; font-size:13px;'>computer chuyên cung cấp điện thoại và máy tính bảng giá sỉ tại Đa&#768; Nă&#771;ng - các tỉnh thành khác. Liên hệ: 0123456789 | Email: 13246789@gmail.com</span></h5><p/> </div> </div> </div> </div>
+<div id='taskbar'> <div class='bg-taskbar'> <div class='taskbar'> <div class='hotline'> <p/><h5><span style='color:#FEF51B; font-size:13px;'>ACBComputer chuyên cung cấp các linh kiện, thiết bị máy tính, sản phẩm CNTT ở Bình Dương - các tỉnh thành khác. Hotline: 0986.080.835 - 0987.878.670  | Email: acbcomputerbd@gmail.com</span></h5><p/> </div> </div> </div> </div>
 <div id='header'>
 <div class='ads'>
 </div>
@@ -3086,9 +3183,9 @@ else if (typeof Prototype !== "undefined") Event.observe(window, "load", functio
 <div class='div1'>
 <div class='logo'>
 <b:if cond='data:blog.url == data:blog.homepageUrl'>
-<h1><a href='/'><img src='http://i.imgur.com/RRMsJZY.png' title='siêu thị điện tử, bán điện thoại, shop máy tính'/></a></h1>
+<h1><a href='/'><img src='https://i11.servimg.com/u/f11/19/75/10/57/logo_a12.png' title='Cửa hàng máy tính, linh kiện, thiết bị máy tính'/></a></h1>
 <b:else/>
-<h2><a href='/'><img src='http://i.imgur.com/RRMsJZY.png' title='siêu thị điện tử, bán điện thoại, shop máy tính'/></a></h2>
+<h2><a href='/'><img src='https://i11.servimg.com/u/f11/19/75/10/57/logo_a12.png' title='Cửa hàng máy tính, linh kiện, thiết bị máy tính'/></a></h2>
 </b:if>
 </div>
 </div>
@@ -3100,8 +3197,8 @@ else if (typeof Prototype !== "undefined") Event.observe(window, "load", functio
 <input id='filter_keyword' name='q' placeholder='Nhập từ khóa để tìm kiếm sản phẩm...' required='' type='Nhập từ khóa để tìm kiếm sản phẩm...'/>
 <button class='button_search' type='submit' value='Tìm kiếm'><i class='fa fa-search'/></button>
 </form>
-<div class='keywork'>
-Iphone 6S, Oppo R7, Lumia 920, Samsung Galaxy S4, Mobiistar Lai 504C, BlackBerry Priv,iPhone 6 64GB...
+<div class='keywork text-center'>
+<marquee>Máy tính, Laptop, Thi công lắp đặt Camera quan sát, TV-Box, Phần mềm máy tính, Sản phẩm CNTT...</marquee>
 </div>
 </div>
 </div>
@@ -3132,8 +3229,8 @@ Iphone 6S, Oppo R7, Lumia 920, Samsung Galaxy S4, Mobiistar Lai 504C, BlackBerry
 </div>
 <div class='div4'>
 <span class='fack'><i class='fa fa-phone fa-2x'/></span>
-<span> Tư vấn miễn phí<br/>
-<strong>1800 6969</strong>
+<span> Tư vấn viên Danh<br/>
+<strong> 0986 080835</strong>
 </span>
 </div>
 <div style='clear:both;'/>
@@ -3161,151 +3258,745 @@ Iphone 6S, Oppo R7, Lumia 920, Samsung Galaxy S4, Mobiistar Lai 504C, BlackBerry
 <div class='menu'>
 <div class='menuleft'>
 <div class='bg-menuleft'>
-<div class='mnhome'><a class='mahome' href='#'/></div>
+<div class='mnhome'><a class='mahome' href='/'/></div>
 <div class='dropdown-toggle' data-toggle='dropdown'><span>Danh mục sản phẩm</span></div>
 <ul class='menuleft dropdown-menu homecat' role='menu'>
-<li><a href='#' title=''>
-<i class='fa fa-mobile fa-lg'/> Điê&#803;n thoa&#803;i</a>
-<ul class='submenu'>
-<div class='submenu-col'><h2 class='dungcpt-nsm-title'><a href='/search/label/Điện%20thoại' title=''>Ha&#771;ng sa&#777;n xuâ&#769;t</a></h2>
-<li><a href='#' title=''>Apple (Iphone)</a></li>
-<li><a href='#' title=''>Samsung</a></li>
-<li><a href='#' title=''>Nokia</a></li>
-<li><a href='#' title=''>LG</a></li>
-<li><a href='#' title=''>Huawei</a></li>
-<li><a href='#' title=''>Philips</a></li>
-<li><a href='#' title=''>Coolpads</a></li>
-</div>
-  <div class='submenu-col1'><span class='dungcpt-nsm-title'><a href='#' title=''><br/></a></span>
-<li><a href='#' title=''>Oppo</a></li>
-<li><a href='#' title=''>Wing</a></li>
-<li><a href='#' title=''>HTC</a></li>
-<li><a href='#' title=''>Levono</a></li>
-<li><a href='#' title=''>Motorola</a></li>
-<li><a href='#' title=''>Obi WorldPhone</a></li>
-<li><a href='#' title=''>Archos</a></li>
-</div>
-  <div class='submenu-col1'><span class='dungcpt-nsm-title'><a href='#' title=''><br/></a></span>
-<li><a href='#' title=''>Sony</a></li>
-<li><a href='#' title=''>BlackBerry</a></li>
-<li><a href='#' title=''>Asus</a></li>
-<li><a href='#' title=''>FPT</a></li>
-<li><a href='#' title=''>Mobell</a></li>
-<li><a href='#' title=''>Mobiistar</a></li>
-<li><a href='#' title=''>...</a></li>
-</div>
-</ul>
-</li>
-<li><a href='#' title=''>
-<i class='fa fa-tablet fa-lg'/> Tablet</a>
-<ul class='submenu1'>
-<div class='submenu-col'><h2 class='dungcpt-nsm-title'><a href='#' title=''>Ha&#771;ng sa&#777;n xuâ&#769;t</a></h2>
-<li><a href='#' title=''>Apple (Ipad)</a></li>
-<li><a href='#' title=''>Acer</a></li>
-<li><a href='#' title=''>Archos</a></li>
-<li><a href='#' title=''>Levono</a></li>
-<li><a href='#' title=''>Huawei</a></li>
-<li><a href='#' title=''>Philips</a></li>
-<li><a href='#' title=''>Coolpads</a></li>
-</div>
-  <div class='submenu-col1'><span class='dungcpt-nsm-title'><a href='#' title=''><br/></a></span>
-<li><a href='#' title=''>Samsung</a></li>
-<li><a href='#' title=''>Asus</a></li>
-<li><a href='#' title=''>Dell</a></li>
-<li><a href='#' title=''>Masstel</a></li>
-<li><a href='#' title=''>Wing</a></li>
-<li><a href='#' title=''>HTC</a></li>
-</div>
-</ul>
-</li>
-<li><a href='#' title=''>
-<i class='fa fa-apple fa-lg'/> Apple</a>
-<ul class='submenu2'>
-<div class='submenu-col'><h2 class='dungcpt-nsm-title'><a href='#' title=''>Ca&#769;c sa&#777;n phâ&#777;m Apple</a></h2>
-<li><a href='#' title=''>Iphone</a></li>
-<li><a href='#' title=''>Ipad</a></li>
-<li><a href='#' title=''>Macbook Pro</a></li>
-<li><a href='#' title=''>Mac mini</a></li>
-<li><a href='#' title=''>Ipod</a></li>
-</div>
-  <div class='submenu-col1'><span class='dungcpt-nsm-title'><a href='#' title=''><br/></a></span>
-<li><a href='#' title=''>The New Macbook</a></li>
-<li><a href='#' title=''>Macbook Air</a></li>
-<li><a href='#' title=''>iMac</a></li>
-<li><a href='#' title=''>Mac Pro</a></li>
-<li><a href='#' title=''>Apple TC &amp; Display</a></li>
-</div>
-</ul>
-</li>
-<li><a href='#' title=''>
-<i class='fa fa-laptop fa-lg'/> Laptop</a>
-<ul class='submenu3'>
-<div class='submenu-col'><h2 class='dungcpt-nsm-title'><a href='#' title=''>Ha&#771;ng sa&#777;n xuâ&#769;t</a></h2>
-<li><a href='#' title=''>Apple (Macbook)</a></li>
-<li><a href='#' title=''>Dell</a></li>
-<li><a href='#' title=''>Levono</a></li>
-<li><a href='#' title=''>Acer</a></li>
-<li><a href='#' title=''>Huawei</a></li>
-<li><a href='#' title=''>HTC</a></li>
-<li><a href='#' title=''>...</a></li>
-</div>
-  <div class='submenu-col1'><span class='dungcpt-nsm-title'><a href='#' title=''><br/></a></span>
-<li><a href='#' title=''>Asus</a></li>
-<li><a href='#' title=''>HP</a></li>
-<li><a href='#' title=''>Toshiba</a></li>
-<li><a href='#' title=''>Archos</a></li>
-</div>
-</ul>
-</li>
-<li><a href='#' title=''>
-<i class='fa fa-usb fa-lg'/> Phu&#803; kiê&#803;n</a>
-<ul class='submenu4'>
-<div class='submenu-col'><h2 class='dungcpt-nsm-title'><a href='#' title=''>PK Laptop</a></h2>
-<li><a href='#' title=''>Ô&#777; cư&#769;ng ngoa&#768;i</a></li>
-<li><a href='#' title=''>Miê&#769;ng da&#769;n ma&#768;n hi&#768;nh</a></li>
-<li><a href='#' title=''>Vo&#777; ba&#777;o vê&#803; va&#768; ô&#769;p</a></li>
-<li><a href='#' title=''>Tâ&#769;m phu&#777; ba&#768;n phi&#769;m</a></li>
-<li><a href='#' title=''>Phu&#803; kiê&#803;n kha&#769;c</a></li>
-<li><a href='#' title=''>Sa&#803;c Laptop</a></li>
-<li><a href='#' title=''>Loa da&#768;n</a></li>
-</div>
-<div class='submenu-col'><h2 class='dungcpt-nsm-title'><a href='#' title=''>PK ĐT-Tablet</a></h2>
-<li><a href='#' title=''>Loa</a></li>
-<li><a href='#' title=''>Combo phu&#803; kiê&#803;n</a></li>
-<li><a href='#' title=''>Tai nghe</a></li>
-<li><a href='#' title=''>Bao da &amp; ô&#769;p lưng</a></li>
-<li><a href='#' title=''>The&#777; nhơ&#769;</a></li>
-<li><a href='#' title=''>Sa&#803;c va&#768; ca&#769;p</a></li>
-<li><a href='#' title=''>Sa&#803;c dư&#803; pho&#768;ng</a></li>
-</div>
-<div class='submenu-col'><h2 class='dungcpt-nsm-title'><a href='#' title=''>PK Apple</a></h2>
-<li><a href='#' title=''>Vo&#777;</a></li>
-<li><a href='#' title=''>Ô&#777; cư&#769;ng di đô&#803;ng</a></li>
-<li><a href='#' title=''>Ca&#769;p</a></li>
-<li><a href='#' title=''>Sa&#803;c Iphone</a></li>
-<li><a href='#' title=''>Sa&#803;c Ipad</a></li>
-<li><a href='#' title=''>Ba&#768;n phi&#769;m nhâ&#803;p khâ&#777;u</a></li>
-<li><a href='#' title=''>Chuô&#803;t nhâ&#803;p khâ&#777;u</a></li>
-</div>
-<div class='submenu-col'><h2 class='dungcpt-nsm-title'><a href='#' title=''>Di&#803;ch vu&#803;</a></h2>
-<li><a href='#' title=''>USB 3G</a></li>
-<li><a href='#' title=''>Sim</a></li>
-<li><a href='#' title=''>Phâ&#768;n mê&#768;m</a></li>
-</div>
-</ul>
-</li>
-<li><a class='atop' href='/search/label/Xả hàng'><i class='fa fa-shopping-cart fa-lg'/> Xa&#777; ha&#768;ng</a></li>
-<li><a class='atop' href='/search/label/Trả góp'><i class='fa fa-shopping-basket fa-lg'/> Tra&#777; go&#769;p</a></li>
-<li><a class='atop' href='/search/label/Iphone'><i class='fa fa-mobile fa-lg'/> Iphone</a></li>
-<li><a class='atop' href='/search/label/Ipad'><i class='fa fa-mobile fa-lg'/> Ipad</a></li>
-<li><a class='atop' href='/search/label/Ipad'><i class='fa fa-mobile fa-lg'/> Sa&#777;n phâ&#777;m kha&#769;c</a></li>
-</ul>
+        <li>
+            <a href='#' title='Máy tính'>
+                <i class='fa fa-desktop fa-lg'/> Máy bộ</a>
+            <ul class='submenu'>
+                <div class='submenu-col'>
+                    <h2 class='dungcpt-nsm-title'>
+                        <a href='/search/label/pc' title=''>Máy Mới</a>
+                    </h2>
+                    <li>
+                        <a href='/search/label/pc-acb' title=''>ACB</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/pc-game' title=''>Máy bộ chơi Game</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/pc-all-in-one' title=''>All in One</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/pc-cu' title=''>Máy Cũ</a>
+                    </li>
+                </div>
+                <div class='submenu-col'>
+                    <h2 class='dungcpt-nsm-title'>
+                        <a href='/search/label/pc-brand' title=''>Thương hiệu
+                            <br/>
+                        </a>
+                    </h2>
+                    <li>
+                        <a href='/search/label/pc-dell' title=''>Dell</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/pc-hp' title=''>HP</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/pc-khac' title=''>Khác</a>
+                    </li>
+                </div>
+                <div class='submenu-col'>
+                    <h2 class='dungcpt-nsm-title'>
+                        <a href='/search/label/pc' title=''>Theo bộ vi xử lý
+                            <br/>
+                        </a>
+                    </h2>
+                    <li>
+                        <a href='/search/label/pentium' title='Vi xử lý Pentium'>Intel&#174; Pentium&#8482;</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/core-i3' title='Vi xử lý CORE I3'>Intel&#174; Core&#8482; i3</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/core-i5' title='Vi xử lý CORE I5'>Intel&#174; Core&#8482; i5</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/core-i7' title='Vi xử lý CORE I7'>Intel&#174; Core&#8482; i7</a>
+                    </li>
+                </div>
+            </ul>
+        </li>
+        <li>
+            <a href='#' title=''>
+                <i class='fa fa-laptop fa-lg'/> Laptop</a>
+            <ul class='submenu3'>
+                <div class='submenu-col'>
+                    <h2 class='dungcpt-nsm-title'>
+                        <a href='/search/label/lap' title=''>Thương hiệu</a>
+                    </h2>
+                    <li>
+                        <a href='/search/label/lap-dell' title=''>Dell</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/lap-asus' title=''>Asus</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/lap-acer' title=''>Acer</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/lap-hp' title=''>HP</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/lap-toshiba' title=''>Toshiba</a>
+                    </li>
+                </div>
+            </ul>
+        </li>
+        <li>
+            <a href='/search/label/linh-kien' title=''>
+                <i class='fa fa-desktop fa-lg'/> Linh kiện máy tính</a>
+            <ul class='submenu4'>
+                <div class='submenu-col'>
+                    <h2 class='dungcpt-nsm-title'>
+                        <a href='/search/label/power' title=''>PSU - Nguồn vi tính</a>
+                    </h2>
+                    <li>
+                        <a href='/search/label/power-xigmatek' title=''>Nguồn Xigmatek</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/power-seasonic' title=''>Nguồn Seasonic</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/power-cosair' title=''>Nguồn Cosair</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/power-andyson' title=''>Nguồn Andyson - Acbel</a>
+                    </li>
+                  
+                </div>
+                <div class='submenu-col'>
+                    <h2 class='dungcpt-nsm-title'>
+                        <a href='/search/label/case' title=''>
+                            Case - Vỏ
+                        </a>
+                    </h2>
+                    <li>
+                        <a href='/search/label/case-aigo' title=''>Case Aigo</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/case-infinity' title=''>Case Infinity</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/case-sama' title=''>Case SAMA</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/case-segotep' title=''>Case Segotep - Erosi</a>
+                    </li>
+                </div>
+                <div class='submenu-col'>
+                    <h2 class='dungcpt-nsm-title'>
+                        <a href='/search/label/usb-fan' title=''>
+                            Usb - Fan
+                        </a>
+                    </h2>
+                    <li>
+                        <a href='/search/label/fan-adm' title=''>FAN CPU Intel/AMD</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/fan-jonsbo' title=''>FAN CPU JONSBO</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/fan-775' title=''>FAN CPU 775/1155</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/fan-thuong' title=''>FAN CPU Thường</a>
+                    </li>
+                </div>
+                <div class='submenu-col'>
+                    <h2 class='dungcpt-nsm-title'>
+                        <a href='/search/label/vga' title=''>
+                            VGA - Card màn hình
+                        </a>
+                    </h2>
+                    <li>
+                        <a href='/search/label/vga-gigabyte' title=''>VGA Gigabyte</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/vga-msi' title=''>VGA MSI</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/vga-asus' title=''>VGA Asus</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/vga-palit' title=''>VGA Palit</a>
+                    </li>
+                </div>
+                <div class='submenu-col'>
+                    <h2 class='dungcpt-nsm-title'>
+                        <a href='/search/label/mouse' title=''>
+                           Chuột - Mouse
+                        </a>
+                    </h2>
+                    <li>
+                        <a href='/search/label/mouse-game' title=''>Chuột Game-Net</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/mouse-khac' title=''>Chuột Không Dây</a>
+                    </li>
+                </div>
+                <div class='submenu-col'>
+                    <h2 class='dungcpt-nsm-title'>
+                        <a href='/search/label/keyboard' title=''>
+                           Bàn phím -Keyboard
+                        </a>
+                    </h2>
+                    <li>
+                        <a href='/search/label/keyboard-game' title=''>Phím Game-Net</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/keyboard-khac' title=''>Phím Không Dây</a>
+                    </li>
+                </div>
+              
+                <div class='submenu-col'>
+                    <h2 class='dungcpt-nsm-title'>
+                        <a href='/search/label/disk' title=''>
+                            Ổ CD - DVD
+                        </a>
+                    </h2>
+                    <li>
+                        <a href='/search/label/disk-dvd-rom' title=''>DVD Rom Sata</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/disk-dvd-write' title=''>DVD - RW Sata</a>
+                    </li>
+                </div>
+            </ul>
+        </li>
+        <li>
+            <a href='#' title=''>
+                <i class='fa fa-video-camera fa-lg'/> Camera an ninh CCTV</a>
+            <ul class='submenu1'>
+                <div class='submenu-col'>
+                    <h2 class='dungcpt-nsm-title'>
+                        <a href='/search/label/camera' title=''>Ha&#771;ng sa&#777;n xuâ&#769;t</a>
+                    </h2>
+                    <li>
+                        <a href='/search/label/camera-kbvision' title=''>IP KBVision</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/camera-tplink' title=''>IP TP-Link</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/camera-yoosee' title=''>IP YOOSEE</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/camera-hdcvi' title=''>HDCVI</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/camera-khac' title=''>Khác</a>
+                    </li>
+                </div>
+                <div class='submenu-col'>
+                    <h2 class='dungcpt-nsm-title'>
+                        <a href='/search/label/dauthu' title=''>
+                            Đầu thu - Nguồn
+                        </a>
+                    </h2>
+                    <li>
+                        <a href='/search/label/dauthu-8kenh' title=''>Đầu thu 8 Kênh</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/dauthu-4kenh' title=''>Đầu thu 4 Kênh</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/dauthu-adapter' title=''>Adapter</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/dauthu-khac' title=''>Khác</a>
+                    </li>
+                </div>
+            </ul>
+        </li>
+        <li>
+            <a href='#' title=''>
+                <i class='fa fa-television fa-lg'/> TVBox - Màn hình LCD</a>
+            <ul class='submenu1'>
+                <div class='submenu-col'>
+                    <h2 class='dungcpt-nsm-title'>
+                        <a href='/search/label/tvbox' title=''>TVBox -TV Android</a>
+                    </h2>
+                    <li>
+                        <a href='/search/label/tvbox-android' title=''>ANDROI BOX Q8 4 ANTENG</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/tvbox-hitech' title=''>ANDROI BOX SMART HI TECH</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/tvbox-vinabox' title=''>ANDROI BOX VINABOX X2</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/tvbox-sgbox' title=''>ANDROI BOX SG BOX</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/tvbox-khac' title=''>Khác</a>
+                    </li>
+                  
+                </div>
+                <div class='submenu-col'>
+                    <h2 class='dungcpt-nsm-title'>
+                        <a href='/search/label/lcd' title=''>
+                            LCD - Màn hình
+                        </a>
+                    </h2>
+                    <li>
+                        <a href='/search/label/lcd-samsung' title=''>LCD Samsung</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/lcd-philip' title=''>LCD Philips</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/lcd-lg' title=''>LCD LG</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/lcd-nec' title=''>LCD NEC</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/lcd-aoc' title=''>LCD AOC</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/lcd-khac' title=''>Sản phẩm Khác</a>
+                    </li>
+                </div>
+            </ul>
+        </li>
+        <li>
+            <a href='#' title=''>
+                <i class='fa fa-microchip fa-lg'/> CPU - Mainboard</a>
+            <ul class='submenu1'>
+                <div class='submenu-col'>
+                    <h2 class='dungcpt-nsm-title'>
+                        <a href='/search/label/cpu' title=''>CPU - vi xử lý </a>
+                    </h2>
+                    <li>
+                        <a href='/search/label/cpu-petium' title=''>Intel&#174; Pentium&#8482;</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/cpu-corei3' title=''>Intel&#174; Core&#8482; i3</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/cpu-core-i5' title=''>Intel&#174; Core&#8482; i5</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/cpu-core-i7' title=''>Intel&#174; Core&#8482; i7</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/cpu-8' title=''>CPU Thế hệ 8</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/cpu-1151' title=''>CPU 1151</a>
+                    </li>
+                </div>
+                <div class='submenu-col'>
+                    <h2 class='dungcpt-nsm-title'>
+                        <a href='/search/label/mainboard' title=''>
+                            Mainboard
+                        </a>
+                    </h2>
+                    <li>
+                        <a href='/search/label/main-gigabyte' title=''>Gigabyte</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/main-asus' title=''>Asus</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/main-foxconn' title=''>Foxconn</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/main-msi' title=''>MSI</a>
+                    </li>
+                </div>
+            </ul>
+        </li>
+        <li>
+            <a href='#' title=''>
+                <i class='fa fa-apple fa-lg'/> Sản phẩm Apple</a>
+            <ul class='submenu2'>
+                <div class='submenu-col'>
+                    <h2 class='dungcpt-nsm-title'>
+                        <a href='/search/label/apple' title=''>Ca&#769;c sa&#777;n phâ&#777;m Apple</a>
+                    </h2>
+                    <li>
+                        <a href='/search/label/apple-ipad' title=''>Ipad</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/apple-macbook' title=''>Macbook Pro</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/apple-mac-mini' title=''>Mac mini</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/apple-ipod' title=''>Ipod</a>
+                    </li>
+                </div>
+                <div class='submenu-col1'>
+                    <span class='dungcpt-nsm-title'>
+                        <a href='#' title=''>
+                            <br/>
+                        </a>
+                    </span>
+                    <li>
+                        <a href='/search/label/apple-mac-air' title=''>Macbook Air</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/apple-imac' title=''>iMac</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/apple-mac-pro' title=''>Mac Pro</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/apple-display' title=''>Apple TC &amp; Display</a>
+                    </li>
+                </div>
+            </ul>
+        </li>
+        <li>
+            <a href='#' title=''>
+                <i class='fa fa-sitemap fa-lg'/> Thiết bị mạng</a>
+            <ul class='submenu4'>
+                <div class='submenu-col'>
+                    <h2 class='dungcpt-nsm-title'>
+                        <a href='/search/label/wifi' title=''>Bộ Thu wifi</a>
+                    </h2>
+                    <li>
+                        <a href='/search/label/wifi-tplink' title=''>TP -Link</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/wifi-lblink' title=''>LB -Link</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/wifi-usb' title=''>Usb Wifi</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/wifi-usb3g' title=''>USB 3G/4G</a>
+                    </li>
+                </div>
+                <div class='submenu-col'>
+                    <h2 class='dungcpt-nsm-title'>
+                        <a href='/search/label/repeater' title=''>
+                            Phát khuếch đại
+                        </a>
+                    </h2>
+                    <li>
+                        <a href='/search/label/rep-tplink' title=''>TP-Link</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/rep-totolink' title=''>Toto-Link</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/rep-mercury' title=''>Mercury</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/rep-tenda' title=''>Tenda</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/rep-khac' title=''>Khác</a>
+                    </li>
+                </div>
+                <div class='submenu-col'>
+                    <h2 class='dungcpt-nsm-title'>
+                        <a href='/search/label/switch' title=''>
+                            Hub - Switch
+                        </a>
+                    </h2>
+                    <li>
+                        <a href='/search/label/switch-5' title=''>Switch 5 Port</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/switch-8' title=''>Switch 8 Port</a>
+                    </li>
+                </div>
+                <div class='submenu-col'>
+                    <h2 class='dungcpt-nsm-title'>
+                        <a href='/search/label/linh-tinh' title=''>
+                            Khác
+                        </a>
+                    </h2>
+                    <li>
+                        <a href='/search/label/kiem-bam' title=''>Kiềm bấm mạng</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/usb-lan' title=''>USB ra Lan</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/hop-test' title=''>Hộp Test mạng</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/dau-noi' title=''>Đầu nối mạng</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/bo-chia' title=''>Bộ chia tín hiệu</a>
+                    </li>
+                </div>
+            </ul>
+        </li>
+        <li>
+            <a href='#' title='Máy In - phụ kiện'>
+                <i class='fa fa-print fa-lg'/> Máy In - Phụ kiện máy in</a>
+            <ul class='submenu'>
+                <div class='submenu-col'>
+                    <h2 class='dungcpt-nsm-title'>
+                        <a href='/search/label/printer' title=''>Hãng sản xuất</a>
+                    </h2>
+                    <li>
+                        <a href='/search/label/printer-hp' title=''>HP</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/printer-cannon' title=''>Cannon</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/printer-samsung' title=''>Samsung</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/printer-cu' title=''>Máy in cũ</a>
+                    </li>
+                </div>
+                <div class='submenu-col'>
+                    <h2 class='dungcpt-nsm-title'>
+                        <a href='/search/label/muc-drum' title=''>
+                            Hộp mực - DRUM
+                        </a>
+                    </h2>
+                    <li>
+                        <a href='/search/label/muc' title=''>Các loại hộp mực</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/drum' title=''>DRUM</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/gat' title=''>Gạt Lớn nhỏ</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/truc-tu' title=''>Trục từ</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/khac' title=''>Khác</a>
+                    </li>
+                </div>
+            </ul>
+        </li>
+        <li>
+            <a class='atop' href='/search/label/storage' title='Lưu trữ'>
+                <i class='fa fa-hdd-o fa-lg'/> Thiết bị lưu trữ</a>
+            <ul class='submenu4'>
+                <div class='submenu-col'>
+                    <h2 class='dungcpt-nsm-title'>
+                        <a href='/search/label/hdd' title=''>Ổ cứng HDD</a>
+                    </h2>
+                    <li>
+                        <a href='/search/label/hdd-seagate' title=''>SEAGATE</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/hdd-kingston' title=''>KING STON</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/hdd-hitachi' title=''>HITACHI</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/hdd-western' title=''>WESTERN</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/hdd-trancend' title=''>TRANSCEND</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/hdd-deluxe' title=''>DELUXE</a>
+                    </li>
+                </div>
+                <div class='submenu-col'>
+                    <h2 class='dungcpt-nsm-title'>
+                        <a href='/search/label/ssd' title=''>
+                            Ổ cứng SSD            
+                        </a>
+                    </h2>
+                    <li>
+                        <a href='/search/label/ssd-intel' title=''>INTEL</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/ssd-samsung' title=''>SAMSUNG</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/ssd-kingston' title=''>KING STON</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/ssd-toshiba' title=''>TOSHIBA</a>
+                    </li>
+                </div>
+                <div class='submenu-col'>
+                    <h2 class='dungcpt-nsm-title'>
+                        <a href='/search/label/ram' title=''>Ram
+                            <br/>
+                        </a>
+                    </h2>
+                    <li>
+                        <a href='/search/label/ram-ddr4' title=''>DDR4</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/ram-ddr3' title=''>DDR3</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/ram-ddr2' title=''>DDR2</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/ram-adm' title=''>ADM</a>
+                    </li>
+                </div>
+                <div class='submenu-col'>
+                    <h2 class='dungcpt-nsm-title'>
+                        <a href='/search/label/portable' title=''>Ổ Cứng Di Động
+                            <br/>
+                        </a>
+                    </h2>
+                    <li>
+                        <a href='/search/label/portable-kingmax' title=''>Kingmax</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/portable-kingston' title=''>Kingstone</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/portable-khac' title=''>DDR2</a>
+                    </li>
+                </div>
+            </ul>
+        </li>
+        <li>
+            <a href='#' title='Loa tai nghe'>
+                <i class='fa fa-headphones fa-lg'/> Loa - Tai nghe - Webcam</a>
+            <ul class='submenu'>
+                <div class='submenu-col'>
+                    <h2 class='dungcpt-nsm-title'>
+                        <a href='/search/label/speaker' title=''>Bộ Loa</a>
+                    </h2>
+                    <li>
+                        <a href='/search/label/speaker-bluetooth' title=''>LOA BLUETOOTH </a>
+                    </li>
+                    <li>
+                        <a href='/search/label/speaker-usb' title=''>USB Sound</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/speaker-khac' title=''>Loa Nhạc nước</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/headphone' title=''>Tai nghe Bluetooth</a>
+                    </li>
+                </div>
+                <div class='submenu-col'>
+                    <h2 class='dungcpt-nsm-title'>
+                        <a href='/search/label/headphone' title=''>Tai nghe
+                            <br/>
+                        </a>
+                    </h2>
+                    <li>
+                        <a href='/search/label/headphone-bluetooth' title=''>Tai nghe BLUETOOTH</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/headphone-khac' title=''>Khác</a>
+                    </li>
+                </div>
+                <div class='submenu-col'>
+                    <h2 class='dungcpt-nsm-title'>
+                        <a href='/search/label/webcam' title=''>
+                            Webcam                          
+                        </a>
+                    </h2>
+                    <li>
+                        <a href='/search/label/linhtinh' title=''>Linh tinh</a>
+                    </li>
+                </div>
+            </ul>
+        </li>
+        <li>
+            <a href='#' title=''>
+                <i class='fa fa-usb fa-lg'/> Phụ kiện - Cáp nối</a>
+            <ul class='submenu4'>
+                <div class='submenu-col'>
+                    <h2 class='dungcpt-nsm-title'>
+                        <a href='/search/label/pk-laptop' title=''>PK Laptop</a>
+                    </h2>
+                    <li>
+                        <a href='#' title=''>Miê&#769;ng da&#769;n ma&#768;n hi&#768;nh</a>
+                    </li>
+                    <li>
+                        <a href='#' title=''>Vo&#777; ba&#777;o vê&#803; va&#768; ô&#769;p</a>
+                    </li>
+                    <li>
+                        <a href='#' title=''>Tâ&#769;m phu&#777; ba&#768;n phi&#769;m</a>
+                    </li>
+                    <li>
+                        <a href='#' title=''>Phu&#803; kiê&#803;n kha&#769;c</a>
+                    </li>
+                    <li>
+                        <a href='#' title=''>Sa&#803;c Laptop</a>
+                    </li>
+                    <li>
+                        <a href='#' title=''>Loa da&#768;n</a>
+                    </li>
+                </div>
+                <div class='submenu-col'>
+                    <h2 class='dungcpt-nsm-title'>
+                        <a href='/search/label/cable' title=''>Cáp Tín Hiệu</a>
+                    </h2>
+                    <li>
+                        <a href='/search/label/cable-hdmi' title=''>HDMI</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/cable-pci' title=''>PCI</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/cable-sata' title=''>Cáp SATA HDD</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/cable-power' title=''>Dây Nguồn Tốt</a>
+                    </li>
+                </div>
+                <div class='submenu-col'>
+                    <h2 class='dungcpt-nsm-title'>
+                        <a href='#' title=''>PK Apple</a>
+                    </h2>
+                    <li>
+                        <a href='#' title=''>Vo&#777;</a>
+                    </li>
+                    <li>
+                        <a href='#' title=''>Ô&#777; cư&#769;ng di đô&#803;ng</a>
+                    </li>
+                    <li>
+                        <a href='#' title=''>Ca&#769;p</a>
+                    </li>
+                    <li>
+                        <a href='#' title=''>Sa&#803;c Iphone</a>
+                    </li>
+                    <li>
+                        <a href='#' title=''>Sa&#803;c Ipad</a>
+                    </li>
+                    <li>
+                        <a href='#' title=''>Ba&#768;n phi&#769;m nhâ&#803;p khâ&#777;u</a>
+                    </li>
+                    <li>
+                        <a href='#' title=''>Chuô&#803;t nhâ&#803;p khâ&#777;u</a>
+                    </li>
+                </div>
+                <div class='submenu-col'>
+                    <h2 class='dungcpt-nsm-title'>
+                        <a href='/search/label/service' title=''>Di&#803;ch vu&#803;</a>
+                    </h2>
+                    <li>
+                        <a href='/search/label/service-usb3g' title=''>USB 3G</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/software' title=''>Phâ&#768;n mê&#768;m</a>
+                    </li>
+                </div>
+            </ul>
+        </li>
+        </ul>
 </div>
 </div>
 <div class='menuright'>
 <ul class='mrul'>
 <li class='mrli'>
-<a class='mratop mdrop' href='/search/label/Máy đổi trả'>Ma&#769;y đô&#777;i tra&#777;</a>
+<a class='mratop mdrop' href='/search/label/doi-tra'>Quy định đổi trả</a>
 <div class='dropdown_1column'>
 <div class='mcol'>
 <div class='colr'>
@@ -3316,7 +4007,7 @@ Iphone 6S, Oppo R7, Lumia 920, Samsung Galaxy S4, Mobiistar Lai 504C, BlackBerry
 </div>
 </li>
 <li class='mrli'>
-<a class='mratop mdrop' href='/search/label/Khuyến mãi'>Khuyê&#769;n ma&#771;i</a>
+<a class='mratop mdrop' href='/search/label/sale-off'>Khuyến mãi</a>
 <div class='dropdown_1column'>
 <div class='mcol'>
 <div class='colr'>
@@ -3327,7 +4018,7 @@ Iphone 6S, Oppo R7, Lumia 920, Samsung Galaxy S4, Mobiistar Lai 504C, BlackBerry
 </div>
 </li>
 <li class='mrli'>
-<a class='mratop mdrop' href='/search/label/Tin hay'>Tin hay</a>
+<a class='mratop mdrop' href='/search/label/news'>Tin Tức</a>
 <div class='dropdown_1column'>
 <div class='mcol'>
 <div class='colr'>
@@ -3336,7 +4027,7 @@ Iphone 6S, Oppo R7, Lumia 920, Samsung Galaxy S4, Mobiistar Lai 504C, BlackBerry
 </div>
 </li>
 <li class='mrli'>
-<a class='mratop mdrop' href='/search/label/Tu-Van'>Tư Vấn</a>
+<a class='mratop mdrop' href='/search/label/support'>Tư Vấn</a>
 <div class='dropdown_1column'>
 <div class='mcol'>
 <div class='colr'>
@@ -3773,7 +4464,7 @@ HieuHien.fixedPecific = function () {
 <div class='detail-new'>
 <ul class='listnews'>
 <script type='text/javascript'>
-homepageurl=&quot;http://computer.hotrofm.net/&quot;;
+homepageurl=&quot;https://websacbcomputer.blogspot.com&quot;;
 sumpost = 50;
 numposts = 15; 
 sumtitlep = 43;
@@ -3851,7 +4542,7 @@ function showrecentposts(h) {
               document.write('<div class="detail-new"><ul class="listnews">');
 			}
 		}
-        f = -1 != s.indexOf("[giaban]") ? '<li class="lli item"><div class="box_item simpleCart_shelfItem"> ' + hotdeal + '<div class="lpro"> <a id="thumb" class="lmhref item_thumb" href="' + l + '"> <img class="lazy"  class="item_thumb" src="' + img[k] + '"/> </a> <a href="' + l + '"> <h3 class="item_name lmname" >' + f+ '</h3> </a> <div class="lprice"> <span class="price item_price">' + giaban + '</span> <span class="lspecial">' + giacu + '</span> </div></div><div class="buy_control"><a class="item_add addtocart iframe maytinh" data-iframe="'+urlmuangay+'"><span class=" view_lft">Mua Ngay</span></a><a class="item_add addtocart mobile" ><span class=" view_lft">Mua Ngay</span></a></div></div></li>' : '<li> <h3 class="info_title"> <a href="' + l + '">'+f+'</a> </h3> <div class="information"> <div class="info_image"><a href="' + l + '"><img alt="'+f+'" src="' + img[k] + '"></a></div><div class="info_desc yes_image">'+stripHtmlTags(tintuc,100)+'.... </div></div><div class="xemtiep"><a href="' + l + '" class="button"><span>Xem tiếp</span></a></div></li>';
+        f = -1 != s.indexOf("[giaban]") ? '<li class="lli item"><div class="box_item simpleCart_shelfItem"> ' + hotdeal + '<div class="lpro"> <a id="thumb" class="lmhref item_thumb" href="' + l + '"> <img class="lazy"  class="item_thumb" src="' + img[k] + '"/> </a> <a href="' + l + '"> <h3 class="item_name lmname" >' + f+ '</h2> </a> <div class="lprice"> <span class="price item_price">' + giaban + '</span> <span class="lspecial">' + giacu + '</span> </div></div><div class="buy_control"><a class="item_add addtocart iframe maytinh" data-iframe="'+urlmuangay+'"><span class=" view_lft">Mua Ngay</span></a><a class="item_add addtocart mobile" ><span class=" view_lft">Mua Ngay</span></a></div></div></li>' : '<li> <h3 class="info_title"> <a href="' + l + '">'+f+'</a> </h3> <div class="information"> <div class="info_image"><a href="' + l + '"><img alt="'+f+'" src="' + img[k] + '"></a></div><div class="info_desc yes_image">'+stripHtmlTags(tintuc,100)+'.... </div></div><div class="xemtiep"><a href="' + l + '" class="button"><span>Xem tiếp</span></a></div></li>';
         document.write(f)
     }
         if(k == numposts){
@@ -3930,6 +4621,7 @@ if (page <= parseInt(pagelist)) {
       <b:widget-setting name='showDateHeader'>true</b:widget-setting>
       <b:widget-setting name='style.textcolor'>#000000</b:widget-setting>
       <b:widget-setting name='showShareButtons'>true</b:widget-setting>
+      <b:widget-setting name='authorLabel'>By</b:widget-setting>
       <b:widget-setting name='showCommentLink'>true</b:widget-setting>
       <b:widget-setting name='style.urlcolor'>#008000</b:widget-setting>
       <b:widget-setting name='showAuthor'>true</b:widget-setting>
@@ -5061,11 +5753,18 @@ document.write(fbcm);
 <b:if cond='data:blog.url == data:blog.homepageUrl'>
 <div class='ct_slide' id='content'>
 <div class='slideshow'>
-<div class='nivoSlider' id='slideshow' style='background: url(&apos;http://4.bp.blogspot.com/-MnsS5V5aYbo/VmggQ1otYDI/AAAAAAAAFIc/hPjyxu3YvTo/s1600/dung-pc-1.png&apos;) no-repeat; position: relative;'>
-<a class='nivo-imageLink' href='#' style='display: none;'><img data-src='http://1.bp.blogspot.com/-hD6tD5RUh2U/VmggQY-0QxI/AAAAAAAAFIU/F26yCblDUJQ/s1600/dung-pc-2.png' style='display: none;'/></a>
-<a class='nivo-imageLink' href='#' style='display: block;'><img data-src='http://4.bp.blogspot.com/-tlYPDtLYAjk/VmggQrLimxI/AAAAAAAAFIY/Tp6XQ7YfbPQ/s1600/dung-pc-3.png' style='display: none;'/></a>
-<a class='nivo-imageLink' href='#' style='display: none;'><img data-src='http://1.bp.blogspot.com/-n9ZRgB6pM4E/VmggsJ_eHUI/AAAAAAAAFIk/y4FoaWyqqSY/s1600/dung-pc-4.png' style='display: none;'/></a>
-<a class='nivo-imageLink' href='#' style='display: none;'><img data-src='http://4.bp.blogspot.com/-MnsS5V5aYbo/VmggQ1otYDI/AAAAAAAAFIc/hPjyxu3YvTo/s1600/dung-pc-1.png' style='display: none;'/></a>
+    <div class='nivoSlider' id='slideshow' style='background: url(&apos;https://lh3.googleusercontent.com/-8t-iibIkRjg/Wje-eigIUMI/AAAAAAAAAYQ/AO5A3H_vmB079cXmovH9QC7EJhQsks1JACEwYBhgL/s0/6.jpg&apos;) no-repeat; position: relative;'>
+<a class='nivo-imageLink' href='#' style='display: none;'><img data-src='https://lh3.googleusercontent.com/-jJtc_2Vp2nY/Wje-evquHxI/AAAAAAAAAYQ/4iFK1YjZEwoJEdcyApBg3ycwfYIa5VHjACEwYBhgL/s0/5.jpg' style='display: none;'/></a>
+<a class='nivo-imageLink' href='#' style='display: none;'><img data-src='https://lh3.googleusercontent.com/-kYnb_iGuD-A/Wje-em8FYfI/AAAAAAAAAYQ/V2VAv9REuOEg-mPlVp_fHygQinz9pa21QCEwYBhgL/s0/2.jpg' style='display: none;'/></a>
+<a class='nivo-imageLink' href='#' style='display: none;'><img data-src='https://lh3.googleusercontent.com/-pkcAXuP5gSk/Wje-emMVqKI/AAAAAAAAAYQ/Il_ZRzRsmwcMqLplcLdJzdViPM1gGTzigCEwYBhgL/s0/3.jpg' style='display: none;'/></a>
+<a class='nivo-imageLink' href='#' style='display: none;'><img data-src='https://lh3.googleusercontent.com/-3Pzd2YgEZBw/Wje-evv97tI/AAAAAAAAAYQ/rWFzgY-okcAvgdHhqXI9R1QB6U5tf6ewwCEwYBhgL/s0/1.jpg' style='display: none;'/></a>
+<a class='nivo-imageLink' href='#' style='display: none;'><img data-src='https://lh3.googleusercontent.com/-2D-HKc-8rwM/Wje-egz5grI/AAAAAAAAAYQ/naIdlzJlQrcJk5S7uhk1oXVKarq5myc2ACEwYBhgL/s0/4.jpg' style='display: none;'/></a>
+<a class='nivo-imageLink' href='#' style='display: none;'><img data-src='https://lh3.googleusercontent.com/-6Ecr5Jgo_mM/Wje-ejG8GwI/AAAAAAAAAYQ/jXWEzv-P0voHEBUmaXyRgpVOG4A_-RMnwCEwYBhgL/s0/7.jpg' style='display: none;'/></a>
+<a class='nivo-imageLink' href='#' style='display: none;'><img data-src='https://lh3.googleusercontent.com/--vYk1p75bJ0/Wje-eskcDGI/AAAAAAAAAYQ/yTiO0m-UMZ4NefGEkUxzMnMEe5rDQ9IkACEwYBhgL/s0/9.jpg' style='display: none;'/></a>
+<a class='nivo-imageLink' href='#' style='display: none;'><img data-src='https://lh3.googleusercontent.com/-bOlgI-q_wFY/Wje-eiqjlxI/AAAAAAAAAYQ/Iex-Rdcp4BoUhS8rrE76itJg26_4FkqLgCEwYBhgL/s0/8.jpg' style='display: none;'/></a>
+<a class='nivo-imageLink' href='#' style='display: none;'><img data-src='https://lh3.googleusercontent.com/-b9OF2GxfLzU/Wje-ekRFOwI/AAAAAAAAAYQ/zVM0dzTORMcNRI3om-IT8vlAIvHMA3jfwCEwYBhgL/s0/10.jpg' style='display: none;'/></a>
+<a class='nivo-imageLink' href='#' style='display: none;'><img data-src='https://lh3.googleusercontent.com/-utt_hZrb1yU/Wje-epDtGBI/AAAAAAAAAYQ/tx-MkIlalDQdTQ4euFUKk5GRVnUFUqDygCEwYBhgL/s0/12.jpg' style='display: none;'/></a>
+<a class='nivo-imageLink' href='#' style='display: none;'><img data-src='https://lh3.googleusercontent.com/-jJtc_2Vp2nY/Wje-evquHxI/AAAAAAAAAYQ/4iFK1YjZEwoJEdcyApBg3ycwfYIa5VHjACEwYBhgL/s0/5.jpg' style='display: none;'/></a>
 <div class='nivo-caption' style='opacity: 0;'>
 </div>
 <div class='nivo-directionNav' style='display: none;'>
@@ -5074,41 +5773,43 @@ document.write(fbcm);
 <a class='nivo-control' rel='0'>1</a><a class='nivo-control active' rel='1'>2</a><a class='nivo-control' rel='2'>3</a><a class='nivo-control' rel='3'>4</a><a class='nivo-control' rel='4'>5</a><a class='nivo-control' rel='5'>6</a></div>
 </div>
 </div>
-<div class='three-box'>
-<a href='' style=''><img src='http://4.bp.blogspot.com/-GiC5hpeY0Gs/VmhuHO2TGLI/AAAAAAAAFIw/56Q5Fgd77Aw/s1600/db-dungcomputer.png' style='width: 100%;height: 80px;border: 0;'/></a>
 </div>
-</div>
+
 <b:section class='sidebar' id='content2' showaddelement='yes'>
-  <b:widget id='HTML1' locked='false' title='' type='HTML'>
+  <b:widget id='HTML10' locked='false' title='máy-bộ' type='HTML'>
     <b:widget-settings>
       <b:widget-setting name='content'>&lt;div class=&#39;block&#39;&gt;
-&lt;div class=&#39;col_left spnoibat&#39; id=&#39;content&#39;&gt;
-&lt;div class=&#39;spntabs&#39;&gt;
-&lt;div class=&#39;tabss-3 maytinh&#39;&gt;
-&lt;a class=&#39;tab-menu tab-get-data selected&#39; data-link=&#39;/Home/GetProductMenucon/3FC15F83&#39; data-value=&#39;3&#39; data-value-con=&#39;3&#39; href=&#39;/search/label/Điện%20thoại&#39;&gt;Điê&amp;#803;n thoa&amp;#803;i&lt;/a&gt;
-&lt;div class=&#39;div-xemthem-3&#39;&gt;
-&lt;a class=&#39;xemthem&#39; href=&#39;/search/label/Điện%20thoại&#39;&gt;Xem tất cả &amp;#187;&lt;/a&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;!--Menu Tab mobile--&gt;
-&lt;div class=&#39;tabss-1 mobile&#39;&gt;
-&lt;a class=&#39;tab-menu tab-get-data selected&#39; data-link=&#39;/Home/GetProductMenucon/267D4D2B&#39; data-value=&#39;1&#39; data-value-con=&#39;1&#39; href=&#39;/search/label/Điện%20thoại&#39;&gt;Điê&amp;#803;n thoa&amp;#803;i&lt;/a&gt;
-&lt;div class=&#39;div-xemthem-3&#39;&gt;
-&lt;a class=&#39;xemthem&#39; href=&#39;/search/label/Điện%20thoại&#39;&gt;Xem tất cả &amp;#187;&lt;/a&gt;&lt;/div&gt;
-&lt;/div&gt;
+    &lt;div class=&#39;col_left spnoibat&#39; id=&#39;content&#39;&gt;
+        &lt;div class=&#39;spntabs&#39;&gt;
+            &lt;div class=&#39;tabss-3 maytinh&#39;&gt;
+                &lt;a class=&#39;tab-menu tab-get-data selected&#39; data-link=&#39;/Home/GetProductMenucon/3FC15F83&#39; data-value=&#39;3&#39; data-value-con=&#39;3&#39;
+                    href=&#39;/search/label/pc&#39;&gt;Máy Bộ&lt;/a&gt;
+                &lt;div class=&#39;div-xemthem-3&#39;&gt;
+                    &lt;a class=&#39;xemthem&#39; href=&#39;/search/label/pc&#39;&gt;Xem tất cả &amp;#187;&lt;/a&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;!--Menu Tab mobile--&gt;
+            &lt;div class=&#39;tabss-1 mobile&#39;&gt;
+                &lt;a class=&#39;tab-menu tab-get-data selected&#39; data-link=&#39;/Home/GetProductMenucon/267D4D2B&#39; data-value=&#39;1&#39; data-value-con=&#39;1&#39;
+                    href=&#39;/search/label/pc&#39;&gt;Máy Bộ&lt;/a&gt;
+                &lt;div class=&#39;div-xemthem-3&#39;&gt;
+                    &lt;a class=&#39;xemthem&#39; href=&#39;/search/label/pc&#39;&gt;Xem tất cả &amp;#187;&lt;/a&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
 
-&lt;/div&gt;
-&lt;div class=&#39;tab_page&#39; id=&#39;tab_list-pro-3&#39;&gt;
-&lt;div class=&#39;firmware&#39;&gt;
-&lt;div class=&#39;middle listpro&#39; id=&#39;listpro-3&#39;&gt;
-&lt;script language=&#39;JavaScript&#39;&gt; //&lt;![CDATA[
-document.write(&quot;&lt;script src=\&quot;/feeds/posts/default/-/Điện%20thoại?max-results=&quot;+10+&quot;&amp;orderby=published&amp;alt=json-in-script&amp;callback=labelproduct\&quot;&gt;&lt;\/script&gt;&quot;);      //]]&gt;
-&lt;/script&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class=&#39;chomeib&#39;&gt;
-&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&#39;tab_page&#39; id=&#39;tab_list-pro-3&#39;&gt;
+            &lt;div class=&#39;firmware&#39;&gt;
+                &lt;div class=&#39;middle listpro&#39; id=&#39;listpro-3&#39;&gt;
+                    &lt;script language=&#39;JavaScript&#39;&gt; //&lt;![CDATA[
+                        document.write(&quot;&lt;script src=\&quot;/feeds/posts/default/-/pc?max-results=&quot; + 40 + &quot;&amp;orderby=published&amp;alt=json-in-script&amp;callback=labelproduct\&quot;&gt;&lt;\/script&gt;&quot;);      //]]&gt;
+                    &lt;/script&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&#39;chomeib&#39;&gt;
+    &lt;/div&gt;
 &lt;/div&gt;</b:widget-setting>
     </b:widget-settings>
     <b:includable id='main'>
@@ -5123,36 +5824,40 @@ document.write(&quot;&lt;script src=\&quot;/feeds/posts/default/-/Điện%20tho�
   <b:include name='quickedit'/>
 </b:includable>
   </b:widget>
-  <b:widget id='HTML2' locked='false' title='' type='HTML'>
+  <b:widget id='HTML1' locked='false' title='lap' type='HTML'>
     <b:widget-settings>
       <b:widget-setting name='content'>&lt;div class=&#39;block&#39;&gt;
-&lt;div class=&#39;col_left spnoibat&#39; id=&#39;content&#39;&gt;
-&lt;div class=&#39;spntabs&#39;&gt;
-&lt;div class=&#39;tabss-3 maytinh&#39;&gt;
-&lt;a class=&#39;tab-menu tab-get-data selected&#39; data-link=&#39;/Home/GetProductMenucon/3FC15F83&#39; data-value=&#39;3&#39; data-value-con=&#39;3&#39; href=&#39;/search/label/Tablet&#39;&gt;Máy tính bảng tomy&lt;/a&gt;
-&lt;div class=&#39;div-xemthem-3&#39;&gt;
-&lt;a class=&#39;xemthem&#39; href=&#39;/search/label/Tablet&#39;&gt;Xem tất cả &amp;#187;&lt;/a&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;!--Menu Tab mobile--&gt;
-&lt;div class=&#39;tabss-1 mobile&#39;&gt;
-&lt;a class=&#39;tab-menu tab-get-data selected&#39; data-link=&#39;/Home/GetProductMenucon/267D4D2B&#39; data-value=&#39;1&#39; data-value-con=&#39;1&#39; href=&#39;/search/label/Tablet&#39;&gt;Ma&amp;#769;y ti&amp;#769;nh ba&amp;#777;ng&lt;/a&gt;
-&lt;div class=&#39;div-xemthem-3&#39;&gt;
-&lt;a class=&#39;xemthem&#39; href=&#39;/search/label/Tablet&#39;&gt;Xem tất cả &amp;#187;&lt;/a&gt;&lt;/div&gt;
-&lt;/div&gt;
+    &lt;div class=&#39;col_left spnoibat&#39; id=&#39;content&#39;&gt;
+        &lt;div class=&#39;spntabs&#39;&gt;
+            &lt;div class=&#39;tabss-3 maytinh&#39;&gt;
+                &lt;a class=&#39;tab-menu tab-get-data selected&#39; data-link=&#39;/Home/GetProductMenucon/3FC15F83&#39; data-value=&#39;3&#39; data-value-con=&#39;3&#39;
+                    href=&#39;/search/label/laptop&#39;&gt;Laptop&lt;/a&gt;
+                &lt;div class=&#39;div-xemthem-3&#39;&gt;
+                    &lt;a class=&#39;xemthem&#39; href=&#39;/search/label/laptop&#39;&gt;Xem tất cả &amp;#187;&lt;/a&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;!--Menu Tab mobile--&gt;
+            &lt;div class=&#39;tabss-1 mobile&#39;&gt;
+                &lt;a class=&#39;tab-menu tab-get-data selected&#39; data-link=&#39;/Home/GetProductMenucon/267D4D2B&#39; data-value=&#39;1&#39; data-value-con=&#39;1&#39;
+                    href=&#39;/search/label/laptop&#39;&gt;Laptop&lt;/a&gt;
+                &lt;div class=&#39;div-xemthem-3&#39;&gt;
+                    &lt;a class=&#39;xemthem&#39; href=&#39;/search/label/laptop&#39;&gt;Xem tất cả &amp;#187;&lt;/a&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
 
-&lt;/div&gt;
-&lt;div class=&#39;tab_page&#39; id=&#39;tab_list-pro-3&#39;&gt;
-&lt;div class=&#39;firmware&#39;&gt;
-&lt;div class=&#39;middle listpro&#39; id=&#39;listpro-3&#39;&gt;
-&lt;script language=&#39;JavaScript&#39;&gt; //&lt;![CDATA[
-document.write(&quot;&lt;script src=\&quot;/feeds/posts/default/-/Tablet?max-results=&quot;+10+&quot;&amp;orderby=published&amp;alt=json-in-script&amp;callback=labelproduct\&quot;&gt;&lt;\/script&gt;&quot;);      //]]&gt;
-&lt;/script&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class=&#39;chomeib&#39;&gt;
-&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&#39;tab_page&#39; id=&#39;tab_list-pro-3&#39;&gt;
+            &lt;div class=&#39;firmware&#39;&gt;
+                &lt;div class=&#39;middle listpro&#39; id=&#39;listpro-3&#39;&gt;
+                    &lt;script language=&#39;JavaScript&#39;&gt; //&lt;![CDATA[
+                        document.write(&quot;&lt;script src=\&quot;/feeds/posts/default/-/laptop?max-results=&quot; + 40 + &quot;&amp;orderby=published&amp;alt=json-in-script&amp;callback=labelproduct\&quot;&gt;&lt;\/script&gt;&quot;);      //]]&gt;
+                    &lt;/script&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&#39;chomeib&#39;&gt;
+    &lt;/div&gt;
 &lt;/div&gt;</b:widget-setting>
     </b:widget-settings>
     <b:includable id='main'>
@@ -5167,36 +5872,468 @@ document.write(&quot;&lt;script src=\&quot;/feeds/posts/default/-/Tablet?max-res
   <b:include name='quickedit'/>
 </b:includable>
   </b:widget>
-  <b:widget id='HTML8' locked='false' title='' type='HTML'>
+  <b:widget id='HTML2' locked='false' title='linh kiện' type='HTML'>
     <b:widget-settings>
       <b:widget-setting name='content'>&lt;div class=&#39;block&#39;&gt;
-&lt;div class=&#39;col_left spnoibat&#39; id=&#39;content&#39;&gt;
-&lt;div class=&#39;spntabs&#39;&gt;
-&lt;div class=&#39;tabss-3 maytinh&#39;&gt;
-&lt;a class=&#39;tab-menu tab-get-data selected&#39; data-link=&#39;/Home/GetProductMenucon/3FC15F83&#39; data-value=&#39;3&#39; data-value-con=&#39;3&#39; href=&#39;/search/label/Laptop&#39;&gt;Laptop&lt;/a&gt;
-&lt;div class=&#39;div-xemthem-3&#39;&gt;
-&lt;a class=&#39;xemthem&#39; href=&#39;/search/label/Laptop&#39;&gt;Xem tất cả &amp;#187;&lt;/a&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;!--Menu Tab mobile--&gt;
-&lt;div class=&#39;tabss-1 mobile&#39;&gt;
-&lt;a class=&#39;tab-menu tab-get-data selected&#39; data-link=&#39;/Home/GetProductMenucon/267D4D2B&#39; data-value=&#39;1&#39; data-value-con=&#39;1&#39; href=&#39;/search/label/Laptop&#39;&gt;Laptop&lt;/a&gt;
-&lt;div class=&#39;div-xemthem-3&#39;&gt;
-&lt;a class=&#39;xemthem&#39; href=&#39;/search/label/Laptop&#39;&gt;Xem tất cả &amp;#187;&lt;/a&gt;&lt;/div&gt;
-&lt;/div&gt;
+    &lt;div class=&#39;col_left spnoibat&#39; id=&#39;content&#39;&gt;
+    &lt;div class=&#39;spntabs&#39;&gt;
+    &lt;div class=&#39;tabss-3 maytinh&#39;&gt;
+    &lt;a class=&#39;tab-menu tab-get-data selected&#39; data-link=&#39;/Home/GetProductMenucon/3FC15F83&#39; data-value=&#39;3&#39; data-value-con=&#39;3&#39; href=&#39;/search/label/linh-kien&#39;&gt;Linh kiện máy tính&lt;/a&gt;
+    &lt;div class=&#39;div-xemthem-3&#39;&gt;
+    &lt;a class=&#39;xemthem&#39; href=&#39;/search/label/link-kien&#39;&gt;Xem tất cả &amp;#187;&lt;/a&gt;&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;!--Menu Tab mobile--&gt;
+    &lt;div class=&#39;tabss-1 mobile&#39;&gt;
+    &lt;a class=&#39;tab-menu tab-get-data selected&#39; data-link=&#39;/Home/GetProductMenucon/267D4D2B&#39; data-value=&#39;1&#39; data-value-con=&#39;1&#39; href=&#39;/search/label/linh-kien&#39;&gt;Ma&amp;#769;y ti&amp;#769;nh ba&amp;#777;ng&lt;/a&gt;
+    &lt;div class=&#39;div-xemthem-3&#39;&gt;
+    &lt;a class=&#39;xemthem&#39; href=&#39;/search/label/linh-kien&#39;&gt;Xem tất cả &amp;#187;&lt;/a&gt;&lt;/div&gt;
+    &lt;/div&gt;
+    
+    &lt;/div&gt;
+    &lt;div class=&#39;tab_page&#39; id=&#39;tab_list-pro-3&#39;&gt;
+    &lt;div class=&#39;firmware&#39;&gt;
+    &lt;div class=&#39;middle listpro&#39; id=&#39;listpro-3&#39;&gt;
+    &lt;script language=&#39;JavaScript&#39;&gt; //&lt;![CDATA[
+    document.write(&quot;&lt;script src=\&quot;/feeds/posts/default/-/linh-kien?max-results=&quot;+40+&quot;&amp;orderby=published&amp;alt=json-in-script&amp;callback=labelproduct\&quot;&gt;&lt;\/script&gt;&quot;);      //]]&gt;
+    &lt;/script&gt;
+    &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&#39;chomeib&#39;&gt;
+    &lt;/div&gt;
+    &lt;/div&gt;</b:widget-setting>
+    </b:widget-settings>
+    <b:includable id='main'>
+  <!-- only display title if it's non-empty -->
+  <b:if cond='data:title != &quot;&quot;'>
+    <h2 class='title'><data:title/></h2>
+  </b:if>
+  <div class='widget-content'>
+    <data:content/>
+  </div>
 
-&lt;/div&gt;
-&lt;div class=&#39;tab_page&#39; id=&#39;tab_list-pro-3&#39;&gt;
-&lt;div class=&#39;firmware&#39;&gt;
-&lt;div class=&#39;middle listpro&#39; id=&#39;listpro-3&#39;&gt;
-&lt;script language=&#39;JavaScript&#39;&gt; //&lt;![CDATA[
-document.write(&quot;&lt;script src=\&quot;/feeds/posts/default/-/Laptop?max-results=&quot;+10+&quot;&amp;orderby=published&amp;alt=json-in-script&amp;callback=labelproduct\&quot;&gt;&lt;\/script&gt;&quot;);      //]]&gt;
-&lt;/script&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class=&#39;chomeib&#39;&gt;
-&lt;/div&gt;
+  <b:include name='quickedit'/>
+</b:includable>
+  </b:widget>
+  <b:widget id='HTML8' locked='false' title='camera' type='HTML'>
+    <b:widget-settings>
+      <b:widget-setting name='content'>&lt;div class=&#39;block&#39;&gt;
+    &lt;div class=&#39;col_left spnoibat&#39; id=&#39;content&#39;&gt;
+        &lt;div class=&#39;spntabs&#39;&gt;
+            &lt;div class=&#39;tabss-3 maytinh&#39;&gt;
+                &lt;a class=&#39;tab-menu tab-get-data selected&#39; data-link=&#39;/Home/GetProductMenucon/3FC15F83&#39; data-value=&#39;3&#39; data-value-con=&#39;3&#39;
+                    href=&#39;/search/label/camera&#39;&gt;Camera - CCTV&lt;/a&gt;
+                &lt;div class=&#39;div-xemthem-3&#39;&gt;
+                    &lt;a class=&#39;xemthem&#39; href=&#39;/search/label/camera&#39;&gt;Xem tất cả &amp;#187;&lt;/a&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;!--Menu Tab mobile--&gt;
+            &lt;div class=&#39;tabss-1 mobile&#39;&gt;
+                &lt;a class=&#39;tab-menu tab-get-data selected&#39; data-link=&#39;/Home/GetProductMenucon/267D4D2B&#39; data-value=&#39;1&#39; data-value-con=&#39;1&#39;
+                    href=&#39;/search/label/camera&#39;&gt;Camera - CCTV&lt;/a&gt;
+                &lt;div class=&#39;div-xemthem-3&#39;&gt;
+                    &lt;a class=&#39;xemthem&#39; href=&#39;/search/label/camera&#39;&gt;Xem tất cả &amp;#187;&lt;/a&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+
+        &lt;/div&gt;
+        &lt;div class=&#39;tab_page&#39; id=&#39;tab_list-pro-3&#39;&gt;
+            &lt;div class=&#39;firmware&#39;&gt;
+                &lt;div class=&#39;middle listpro&#39; id=&#39;listpro-3&#39;&gt;
+                    &lt;script language=&#39;JavaScript&#39;&gt; //&lt;![CDATA[
+                        document.write(&quot;&lt;script src=\&quot;/feeds/posts/default/-/camera?max-results=&quot; + 40 + &quot;&amp;orderby=published&amp;alt=json-in-script&amp;callback=labelproduct\&quot;&gt;&lt;\/script&gt;&quot;);      //]]&gt;
+                    &lt;/script&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&#39;chomeib&#39;&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</b:widget-setting>
+    </b:widget-settings>
+    <b:includable id='main'>
+  <!-- only display title if it's non-empty -->
+  <b:if cond='data:title != &quot;&quot;'>
+    <h2 class='title'><data:title/></h2>
+  </b:if>
+  <div class='widget-content'>
+    <data:content/>
+  </div>
+
+  <b:include name='quickedit'/>
+</b:includable>
+  </b:widget>
+  <b:widget id='HTML18' locked='false' title='TV-box' type='HTML'>
+    <b:widget-settings>
+      <b:widget-setting name='content'>&lt;div class=&#39;block&#39;&gt;
+    &lt;div class=&#39;col_left spnoibat&#39; id=&#39;content&#39;&gt;
+        &lt;div class=&#39;spntabs&#39;&gt;
+            &lt;div class=&#39;tabss-3 maytinh&#39;&gt;
+                &lt;a class=&#39;tab-menu tab-get-data selected&#39; data-link=&#39;/Home/GetProductMenucon/3FC15F83&#39; data-value=&#39;3&#39; data-value-con=&#39;3&#39;
+                href=&#39;/search/label/tvbox-lcd&#39;&gt;TVBox - Màn hình lcd&lt;/a&gt;
+                &lt;div class=&#39;div-xemthem-3&#39;&gt;
+                    &lt;a class=&#39;xemthem&#39; href=&#39;/search/label/tvbox-lcd&#39;&gt;Xem tất cả &amp;#187;&lt;/a&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;!--Menu Tab mobile--&gt;
+            &lt;div class=&#39;tabss-1 mobile&#39;&gt;
+                &lt;a class=&#39;tab-menu tab-get-data selected&#39; data-link=&#39;/Home/GetProductMenucon/267D4D2B&#39; data-value=&#39;1&#39; data-value-con=&#39;1&#39;
+                    href=&#39;/search/label/tvbox-lcd&#39;&gt;TVBox - Màn hình lcd&lt;/a&gt;
+                &lt;div class=&#39;div-xemthem-3&#39;&gt;
+                    &lt;a class=&#39;xemthem&#39; href=&#39;/search/label/tvbox-lcd&#39;&gt;Xem tất cả &amp;#187;&lt;/a&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+
+        &lt;/div&gt;
+        &lt;div class=&#39;tab_page&#39; id=&#39;tab_list-pro-3&#39;&gt;
+            &lt;div class=&#39;firmware&#39;&gt;
+                &lt;div class=&#39;middle listpro&#39; id=&#39;listpro-3&#39;&gt;
+                    &lt;script language=&#39;JavaScript&#39;&gt; //&lt;![CDATA[
+                        document.write(&quot;&lt;script src=\&quot;/feeds/posts/default/-/tvbox-lcd?max-results=&quot; + 40 + &quot;&amp;orderby=published&amp;alt=json-in-script&amp;callback=labelproduct\&quot;&gt;&lt;\/script&gt;&quot;);      //]]&gt;
+                    &lt;/script&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&#39;chomeib&#39;&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</b:widget-setting>
+    </b:widget-settings>
+    <b:includable id='main'>
+  <!-- only display title if it's non-empty -->
+  <b:if cond='data:title != &quot;&quot;'>
+    <h2 class='title'><data:title/></h2>
+  </b:if>
+  <div class='widget-content'>
+    <data:content/>
+  </div>
+
+  <b:include name='quickedit'/>
+</b:includable>
+  </b:widget>
+  <b:widget id='HTML16' locked='false' title='CPU' type='HTML'>
+    <b:widget-settings>
+      <b:widget-setting name='content'>&lt;div class=&#39;block&#39;&gt;
+    &lt;div class=&#39;col_left spnoibat&#39; id=&#39;content&#39;&gt;
+        &lt;div class=&#39;spntabs&#39;&gt;
+            &lt;div class=&#39;tabss-3 maytinh&#39;&gt;
+                &lt;a class=&#39;tab-menu tab-get-data selected&#39; data-link=&#39;/Home/GetProductMenucon/3FC15F83&#39; data-value=&#39;3&#39; data-value-con=&#39;3&#39;
+                    href=&#39;/search/label/cpu-mainboard&#39;&gt;CPU - Mainboard&lt;/a&gt;
+                &lt;div class=&#39;div-xemthem-3&#39;&gt;
+                    &lt;a class=&#39;xemthem&#39; href=&#39;/search/label/cpu-mainboard&#39;&gt;Xem tất cả &amp;#187;&lt;/a&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;!--Menu Tab mobile--&gt;
+            &lt;div class=&#39;tabss-1 mobile&#39;&gt;
+                &lt;a class=&#39;tab-menu tab-get-data selected&#39; data-link=&#39;/Home/GetProductMenucon/267D4D2B&#39; data-value=&#39;1&#39; data-value-con=&#39;1&#39;
+                    href=&#39;/search/label/cpu-mainboard&#39;&gt;CPU - Mainboard&lt;/a&gt;
+                &lt;div class=&#39;div-xemthem-3&#39;&gt;
+                    &lt;a class=&#39;xemthem&#39; href=&#39;/search/label/cpu-mainboard&#39;&gt;Xem tất cả &amp;#187;&lt;/a&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+
+        &lt;/div&gt;
+        &lt;div class=&#39;tab_page&#39; id=&#39;tab_list-pro-3&#39;&gt;
+            &lt;div class=&#39;firmware&#39;&gt;
+                &lt;div class=&#39;middle listpro&#39; id=&#39;listpro-3&#39;&gt;
+                    &lt;script language=&#39;JavaScript&#39;&gt; //&lt;![CDATA[
+                        document.write(&quot;&lt;script src=\&quot;/feeds/posts/default/-/cpu-mainboard?max-results=&quot; + 40 + &quot;&amp;orderby=published&amp;alt=json-in-script&amp;callback=labelproduct\&quot;&gt;&lt;\/script&gt;&quot;);      //]]&gt;
+                    &lt;/script&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&#39;chomeib&#39;&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</b:widget-setting>
+    </b:widget-settings>
+    <b:includable id='main'>
+  <!-- only display title if it's non-empty -->
+  <b:if cond='data:title != &quot;&quot;'>
+    <h2 class='title'><data:title/></h2>
+  </b:if>
+  <div class='widget-content'>
+    <data:content/>
+  </div>
+
+  <b:include name='quickedit'/>
+</b:includable>
+  </b:widget>
+  <b:widget id='HTML11' locked='false' title='apple' type='HTML'>
+    <b:widget-settings>
+      <b:widget-setting name='content'>&lt;div class=&#39;block&#39;&gt;
+    &lt;div class=&#39;col_left spnoibat&#39; id=&#39;content&#39;&gt;
+        &lt;div class=&#39;spntabs&#39;&gt;
+            &lt;div class=&#39;tabss-3 maytinh&#39;&gt;
+                &lt;a class=&#39;tab-menu tab-get-data selected&#39; data-link=&#39;/Home/GetProductMenucon/3FC15F83&#39; data-value=&#39;3&#39; data-value-con=&#39;3&#39;
+                    href=&#39;/search/label/apple&#39;&gt;Sản phẩm Apple&lt;/a&gt;
+                &lt;div class=&#39;div-xemthem-3&#39;&gt;
+                    &lt;a class=&#39;xemthem&#39; href=&#39;/search/label/apple&#39;&gt;Xem tất cả &amp;#187;&lt;/a&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;!--Menu Tab mobile--&gt;
+            &lt;div class=&#39;tabss-1 mobile&#39;&gt;
+                &lt;a class=&#39;tab-menu tab-get-data selected&#39; data-link=&#39;/Home/GetProductMenucon/267D4D2B&#39; data-value=&#39;1&#39; data-value-con=&#39;1&#39;
+                    href=&#39;/search/label/apple&#39;&gt;Apple&lt;/a&gt;
+                &lt;div class=&#39;div-xemthem-3&#39;&gt;
+                    &lt;a class=&#39;xemthem&#39; href=&#39;/search/label/apple&#39;&gt;Xem tất cả &amp;#187;&lt;/a&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+
+        &lt;/div&gt;
+        &lt;div class=&#39;tab_page&#39; id=&#39;tab_list-pro-3&#39;&gt;
+            &lt;div class=&#39;firmware&#39;&gt;
+                &lt;div class=&#39;middle listpro&#39; id=&#39;listpro-3&#39;&gt;
+                    &lt;script language=&#39;JavaScript&#39;&gt; //&lt;![CDATA[
+                        document.write(&quot;&lt;script src=\&quot;/feeds/posts/default/-/apple?max-results=&quot; + 40 + &quot;&amp;orderby=published&amp;alt=json-in-script&amp;callback=labelproduct\&quot;&gt;&lt;\/script&gt;&quot;);      //]]&gt;
+                    &lt;/script&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&#39;chomeib&#39;&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</b:widget-setting>
+    </b:widget-settings>
+    <b:includable id='main'>
+  <!-- only display title if it's non-empty -->
+  <b:if cond='data:title != &quot;&quot;'>
+    <h2 class='title'><data:title/></h2>
+  </b:if>
+  <div class='widget-content'>
+    <data:content/>
+  </div>
+
+  <b:include name='quickedit'/>
+</b:includable>
+  </b:widget>
+  <b:widget id='HTML13' locked='false' title='mạng' type='HTML'>
+    <b:widget-settings>
+      <b:widget-setting name='content'>&lt;div class=&#39;block&#39;&gt;
+    &lt;div class=&#39;col_left spnoibat&#39; id=&#39;content&#39;&gt;
+        &lt;div class=&#39;spntabs&#39;&gt;
+            &lt;div class=&#39;tabss-3 maytinh&#39;&gt;
+                &lt;a class=&#39;tab-menu tab-get-data selected&#39; data-link=&#39;/Home/GetProductMenucon/3FC15F83&#39; data-value=&#39;3&#39; data-value-con=&#39;3&#39;
+                    href=&#39;/search/label/internet&#39;&gt;Thiết Bị Mạng&lt;/a&gt;
+                &lt;div class=&#39;div-xemthem-3&#39;&gt;
+                    &lt;a class=&#39;xemthem&#39; href=&#39;/search/label/internet&#39;&gt;Xem tất cả &amp;#187;&lt;/a&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;!--Menu Tab mobile--&gt;
+            &lt;div class=&#39;tabss-1 mobile&#39;&gt;
+                &lt;a class=&#39;tab-menu tab-get-data selected&#39; data-link=&#39;/Home/GetProductMenucon/267D4D2B&#39; data-value=&#39;1&#39; data-value-con=&#39;1&#39;
+                    href=&#39;/search/label/internet&#39;&gt;Thiết Bị Mạng&lt;/a&gt;
+                &lt;div class=&#39;div-xemthem-3&#39;&gt;
+                    &lt;a class=&#39;xemthem&#39; href=&#39;/search/label/internet&#39;&gt;Xem tất cả &amp;#187;&lt;/a&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+
+        &lt;/div&gt;
+        &lt;div class=&#39;tab_page&#39; id=&#39;tab_list-pro-3&#39;&gt;
+            &lt;div class=&#39;firmware&#39;&gt;
+                &lt;div class=&#39;middle listpro&#39; id=&#39;listpro-3&#39;&gt;
+                    &lt;script language=&#39;JavaScript&#39;&gt; //&lt;![CDATA[
+                        document.write(&quot;&lt;script src=\&quot;/feeds/posts/default/-/internet?max-results=&quot; + 40 + &quot;&amp;orderby=published&amp;alt=json-in-script&amp;callback=labelproduct\&quot;&gt;&lt;\/script&gt;&quot;);      //]]&gt;
+                    &lt;/script&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&#39;chomeib&#39;&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</b:widget-setting>
+    </b:widget-settings>
+    <b:includable id='main'>
+  <!-- only display title if it's non-empty -->
+  <b:if cond='data:title != &quot;&quot;'>
+    <h2 class='title'><data:title/></h2>
+  </b:if>
+  <div class='widget-content'>
+    <data:content/>
+  </div>
+
+  <b:include name='quickedit'/>
+</b:includable>
+  </b:widget>
+  <b:widget id='HTML12' locked='false' title='máy in' type='HTML'>
+    <b:widget-settings>
+      <b:widget-setting name='content'>&lt;div class=&#39;block&#39;&gt;
+    &lt;div class=&#39;col_left spnoibat&#39; id=&#39;content&#39;&gt;
+        &lt;div class=&#39;spntabs&#39;&gt;
+            &lt;div class=&#39;tabss-3 maytinh&#39;&gt;
+                &lt;a class=&#39;tab-menu tab-get-data selected&#39; data-link=&#39;/Home/GetProductMenucon/3FC15F83&#39; data-value=&#39;3&#39; data-value-con=&#39;3&#39;
+                    href=&#39;/search/label/may-in&#39;&gt;Máy In - Phụ kiện máy in&lt;/a&gt;
+                &lt;div class=&#39;div-xemthem-3&#39;&gt;
+                    &lt;a class=&#39;xemthem&#39; href=&#39;/search/label/may-in&#39;&gt;Xem tất cả &amp;#187;&lt;/a&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;!--Menu Tab mobile--&gt;
+            &lt;div class=&#39;tabss-1 mobile&#39;&gt;
+                &lt;a class=&#39;tab-menu tab-get-data selected&#39; data-link=&#39;/Home/GetProductMenucon/267D4D2B&#39; data-value=&#39;1&#39; data-value-con=&#39;1&#39;
+                    href=&#39;/search/label/may-in&#39;&gt;Máy In&lt;/a&gt;
+                &lt;div class=&#39;div-xemthem-3&#39;&gt;
+                    &lt;a class=&#39;xemthem&#39; href=&#39;/search/label/may-in&#39;&gt;Xem tất cả &amp;#187;&lt;/a&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+
+        &lt;/div&gt;
+        &lt;div class=&#39;tab_page&#39; id=&#39;tab_list-pro-3&#39;&gt;
+            &lt;div class=&#39;firmware&#39;&gt;
+                &lt;div class=&#39;middle listpro&#39; id=&#39;listpro-3&#39;&gt;
+                    &lt;script language=&#39;JavaScript&#39;&gt; //&lt;![CDATA[
+                        document.write(&quot;&lt;script src=\&quot;/feeds/posts/default/-/may-in?max-results=&quot; + 40 + &quot;&amp;orderby=published&amp;alt=json-in-script&amp;callback=labelproduct\&quot;&gt;&lt;\/script&gt;&quot;);      //]]&gt;
+                    &lt;/script&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&#39;chomeib&#39;&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</b:widget-setting>
+    </b:widget-settings>
+    <b:includable id='main'>
+  <!-- only display title if it's non-empty -->
+  <b:if cond='data:title != &quot;&quot;'>
+    <h2 class='title'><data:title/></h2>
+  </b:if>
+  <div class='widget-content'>
+    <data:content/>
+  </div>
+
+  <b:include name='quickedit'/>
+</b:includable>
+  </b:widget>
+  <b:widget id='HTML14' locked='false' title='lưu trữ' type='HTML'>
+    <b:widget-settings>
+      <b:widget-setting name='content'>&lt;div class=&#39;block&#39;&gt;
+    &lt;div class=&#39;col_left spnoibat&#39; id=&#39;content&#39;&gt;
+        &lt;div class=&#39;spntabs&#39;&gt;
+            &lt;div class=&#39;tabss-3 maytinh&#39;&gt;
+                &lt;a class=&#39;tab-menu tab-get-data selected&#39; data-link=&#39;/Home/GetProductMenucon/3FC15F83&#39; data-value=&#39;3&#39; data-value-con=&#39;3&#39;
+                    href=&#39;/search/label/luu-tru&#39;&gt;Lưu Trữ&lt;/a&gt;
+                &lt;div class=&#39;div-xemthem-3&#39;&gt;
+                    &lt;a class=&#39;xemthem&#39; href=&#39;/search/label/luu-tru&#39;&gt;Xem tất cả &amp;#187;&lt;/a&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;!--Menu Tab mobile--&gt;
+            &lt;div class=&#39;tabss-1 mobile&#39;&gt;
+                &lt;a class=&#39;tab-menu tab-get-data selected&#39; data-link=&#39;/Home/GetProductMenucon/267D4D2B&#39; data-value=&#39;1&#39; data-value-con=&#39;1&#39;
+                    href=&#39;/search/label/luu-tru&#39;&gt;Lưu Trữ&lt;/a&gt;
+                &lt;div class=&#39;div-xemthem-3&#39;&gt;
+                    &lt;a class=&#39;xemthem&#39; href=&#39;/search/label/luu-tru&#39;&gt;Xem tất cả &amp;#187;&lt;/a&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+
+        &lt;/div&gt;
+        &lt;div class=&#39;tab_page&#39; id=&#39;tab_list-pro-3&#39;&gt;
+            &lt;div class=&#39;firmware&#39;&gt;
+                &lt;div class=&#39;middle listpro&#39; id=&#39;listpro-3&#39;&gt;
+                    &lt;script language=&#39;JavaScript&#39;&gt; //&lt;![CDATA[
+                        document.write(&quot;&lt;script src=\&quot;/feeds/posts/default/-/luu-tru?max-results=&quot; + 40 + &quot;&amp;orderby=published&amp;alt=json-in-script&amp;callback=labelproduct\&quot;&gt;&lt;\/script&gt;&quot;);      //]]&gt;
+                    &lt;/script&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&#39;chomeib&#39;&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</b:widget-setting>
+    </b:widget-settings>
+    <b:includable id='main'>
+  <!-- only display title if it's non-empty -->
+  <b:if cond='data:title != &quot;&quot;'>
+    <h2 class='title'><data:title/></h2>
+  </b:if>
+  <div class='widget-content'>
+    <data:content/>
+  </div>
+
+  <b:include name='quickedit'/>
+</b:includable>
+  </b:widget>
+  <b:widget id='HTML15' locked='false' title='loa' type='HTML'>
+    <b:widget-settings>
+      <b:widget-setting name='content'>&lt;div class=&#39;block&#39;&gt;
+    &lt;div class=&#39;col_left spnoibat&#39; id=&#39;content&#39;&gt;
+        &lt;div class=&#39;spntabs&#39;&gt;
+            &lt;div class=&#39;tabss-3 maytinh&#39;&gt;
+                &lt;a class=&#39;tab-menu tab-get-data selected&#39; data-link=&#39;/Home/GetProductMenucon/3FC15F83&#39; data-value=&#39;3&#39; data-value-con=&#39;3&#39;
+                    href=&#39;/search/label/speaker&#39;&gt;Loa - Tai Nghe&lt;/a&gt;
+                &lt;div class=&#39;div-xemthem-3&#39;&gt;
+                    &lt;a class=&#39;xemthem&#39; href=&#39;/search/label/speaker&#39;&gt;Xem tất cả &amp;#187;&lt;/a&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;!--Menu Tab mobile--&gt;
+            &lt;div class=&#39;tabss-1 mobile&#39;&gt;
+                &lt;a class=&#39;tab-menu tab-get-data selected&#39; data-link=&#39;/Home/GetProductMenucon/267D4D2B&#39; data-value=&#39;1&#39; data-value-con=&#39;1&#39;
+                    href=&#39;/search/label/speaker&#39;&gt;Loa - Tai Nghe&lt;/a&gt;
+                &lt;div class=&#39;div-xemthem-3&#39;&gt;
+                    &lt;a class=&#39;xemthem&#39; href=&#39;/search/label/speaker&#39;&gt;Xem tất cả &amp;#187;&lt;/a&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+
+        &lt;/div&gt;
+        &lt;div class=&#39;tab_page&#39; id=&#39;tab_list-pro-3&#39;&gt;
+            &lt;div class=&#39;firmware&#39;&gt;
+                &lt;div class=&#39;middle listpro&#39; id=&#39;listpro-3&#39;&gt;
+                    &lt;script language=&#39;JavaScript&#39;&gt; //&lt;![CDATA[
+                        document.write(&quot;&lt;script src=\&quot;/feeds/posts/default/-/speaker?max-results=&quot; + 40 + &quot;&amp;orderby=published&amp;alt=json-in-script&amp;callback=labelproduct\&quot;&gt;&lt;\/script&gt;&quot;);      //]]&gt;
+                    &lt;/script&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&#39;chomeib&#39;&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</b:widget-setting>
+    </b:widget-settings>
+    <b:includable id='main'>
+  <!-- only display title if it's non-empty -->
+  <b:if cond='data:title != &quot;&quot;'>
+    <h2 class='title'><data:title/></h2>
+  </b:if>
+  <div class='widget-content'>
+    <data:content/>
+  </div>
+
+  <b:include name='quickedit'/>
+</b:includable>
+  </b:widget>
+  <b:widget id='HTML17' locked='false' title='phụ kiện' type='HTML'>
+    <b:widget-settings>
+      <b:widget-setting name='content'>&lt;div class=&#39;block&#39;&gt;
+    &lt;div class=&#39;col_left spnoibat&#39; id=&#39;content&#39;&gt;
+        &lt;div class=&#39;spntabs&#39;&gt;
+            &lt;div class=&#39;tabss-3 maytinh&#39;&gt;
+                &lt;a class=&#39;tab-menu tab-get-data selected&#39; data-link=&#39;/Home/GetProductMenucon/3FC15F83&#39; data-value=&#39;3&#39; data-value-con=&#39;3&#39;
+                    href=&#39;/search/label/phu-kien&#39;&gt;Phụ kiện máy tính&lt;/a&gt;
+                &lt;div class=&#39;div-xemthem-3&#39;&gt;
+                    &lt;a class=&#39;xemthem&#39; href=&#39;/search/label/phu-kien&#39;&gt;Xem tất cả &amp;#187;&lt;/a&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;!--Menu Tab mobile--&gt;
+            &lt;div class=&#39;tabss-1 mobile&#39;&gt;
+                &lt;a class=&#39;tab-menu tab-get-data selected&#39; data-link=&#39;/Home/GetProductMenucon/267D4D2B&#39; data-value=&#39;1&#39; data-value-con=&#39;1&#39;
+                    href=&#39;/search/label/phu-kien&#39;&gt;Phụ Kiện&lt;/a&gt;
+                &lt;div class=&#39;div-xemthem-3&#39;&gt;
+                    &lt;a class=&#39;xemthem&#39; href=&#39;/search/label/phu-kien&#39;&gt;Xem tất cả &amp;#187;&lt;/a&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+
+        &lt;/div&gt;
+        &lt;div class=&#39;tab_page&#39; id=&#39;tab_list-pro-3&#39;&gt;
+            &lt;div class=&#39;firmware&#39;&gt;
+                &lt;div class=&#39;middle listpro&#39; id=&#39;listpro-3&#39;&gt;
+                    &lt;script language=&#39;JavaScript&#39;&gt; //&lt;![CDATA[
+                        document.write(&quot;&lt;script src=\&quot;/feeds/posts/default/-/phu-kien?max-results=&quot; + 40 + &quot;&amp;orderby=published&amp;alt=json-in-script&amp;callback=labelproduct\&quot;&gt;&lt;\/script&gt;&quot;);      //]]&gt;
+                    &lt;/script&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&#39;chomeib&#39;&gt;
+    &lt;/div&gt;
 &lt;/div&gt;</b:widget-setting>
     </b:widget-settings>
     <b:includable id='main'>
@@ -5216,7 +6353,7 @@ document.write(&quot;&lt;script src=\&quot;/feeds/posts/default/-/Laptop?max-res
   </div>
 <div id='column_left'>
 <b:section class='sidebar' id='sidebar' showaddelement='yes'>
-  <b:widget id='HTML9' locked='false' title='' type='HTML'>
+  <b:widget id='HTML9' locked='false' title='Chat' type='HTML'>
     <b:widget-settings>
       <b:widget-setting name='content'>&lt;script src=&quot;http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
 
@@ -5238,7 +6375,7 @@ jQuery(&#39;.fchat&#39;).toggle(&#39;slow&#39;);
   });
   });
   &lt;/script&gt;     
-&lt;div class=&quot;fb-page&quot; data-tabs=&quot;messages&quot; data-href=&quot;https://www.facebook.com/hotrofmnet-1147991938592467/&quot; data-width=&quot;300&quot; data-height=&quot;400&quot; data-small-header=&quot;false&quot; data-adapt-container-width=&quot;true&quot; data-hide-cover=&quot;false&quot; data-show-facepile=&quot;true&quot; data-show-posts=&quot;false&quot;&gt;
+&lt;div class=&quot;fb-page&quot; data-tabs=&quot;messages&quot; data-href=&quot;https://www.facebook.com/Acbcomputer/&quot; data-width=&quot;300&quot; data-height=&quot;400&quot; data-small-header=&quot;false&quot; data-adapt-container-width=&quot;true&quot; data-hide-cover=&quot;false&quot; data-show-facepile=&quot;true&quot; data-show-posts=&quot;false&quot;&gt;
    
 &lt;/div&gt;
 &lt;script type=&quot;text/javascript&quot;&gt;
@@ -5274,10 +6411,118 @@ $(function(){
   </b:widget>
   <b:widget id='HTML3' locked='false' title='Hỗ Trợ trực tuyến' type='HTML'>
     <b:widget-settings>
-      <b:widget-setting name='content'>&lt;div class=&quot;boxhohokythuat&quot;&gt;&lt;ul&gt;&lt;li&gt;&lt;div class=&quot;avatar-hotrokt&quot;&gt;&lt;a title=&quot;Chát cùng Template&quot;&gt;&lt;img alt=&quot;template&quot; src=&quot;http://r37.imgfast.net/users/3713/30/06/42/avatars/gallery/avatar10.png&quot; /&gt;&lt;/a&gt;&lt;/div&gt;&lt;div class=&quot;info-hotrokt&quot;&gt;&lt;p&gt;Kinh doanh - &lt;span&gt;Template&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Call: 012345679&lt;/p&gt;&lt;p&gt;&lt;a class=&quot;mar-right&quot; href=&quot;skype:dangietpy?chat&quot; title=&quot;Chát cùng Đăng Bu&amp;#768;i&quot;&gt;&lt;img alt=&quot;skype&quot; src=&quot;http://lh4.googleusercontent.com/-zjBm_8YgSJQ/VkKsKsxel8I/AAAAAAAAAfc/agduX_gZqZM/s1600/skype-icon.png&quot; style=&quot;float: left;margin-right: 10px;&quot; /&gt;  &lt;/a&gt;&lt;/p&gt;&lt;/div&gt;&lt;/li&gt;
-&lt;li&gt;&lt;div class=&quot;avatar-hotrokt&quot;&gt;&lt;a&gt;&lt;img alt=&quot;Mai Lê&quot; src=&quot;http://r37.imgfast.net/users/3713/30/06/42/avatars/gallery/avatar10.png&quot; /&gt;&lt;/a&gt;&lt;/div&gt;&lt;div class=&quot;info-hotrokt&quot;&gt;&lt;p&gt;Kinh doanh - &lt;span&gt;Template&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Call: 012345679&lt;/p&gt;&lt;p&gt;&lt;a class=&quot;mar-right&quot; href=&quot;skype:dangietpy?chat&quot;&gt;&lt;img alt=&quot;skype&quot; src=&quot;http://lh4.googleusercontent.com/-zjBm_8YgSJQ/VkKsKsxel8I/AAAAAAAAAfc/agduX_gZqZM/s1600/skype-icon.png&quot; style=&quot;float: left;margin-right: 10px;&quot; /&gt;  &lt;/a&gt;&lt;/p&gt;&lt;/div&gt;&lt;/li&gt;
-&lt;li&gt;&lt;div class=&quot;avatar-hotrokt&quot;&gt;&lt;a &gt;&lt;img src=&quot;http://r37.imgfast.net/users/3713/30/06/42/avatars/gallery/avatar10.png&quot; /&gt;&lt;/a&gt;&lt;/div&gt;&lt;div class=&quot;info-hotrokt&quot;&gt;&lt;p&gt;Tư vấn - &lt;span&gt;Template&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Call: 012345679&lt;/p&gt;&lt;p&gt;&lt;a class=&quot;mar-right&quot; href=&quot;skype:dangietpy?chat&quot;&gt;&lt;img alt=&quot;skype&quot; src=&quot;http://lh4.googleusercontent.com/-zjBm_8YgSJQ/VkKsKsxel8I/AAAAAAAAAfc/agduX_gZqZM/s1600/skype-icon.png&quot; style=&quot;float: left;margin-right: 10px;&quot; /&gt;  &lt;/a&gt;&lt;/p&gt;&lt;/div&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;&lt;style&gt;div.boxhohokythuat {float: left;width: 100%;}div.boxhohokythuat li{list-style: none;float: left;width: 313px;margin-bottom: 15px;}div.boxhohokythuat ul {margin: 0;padding: 0;}div#boxlienhehotrokt {float: left;width: 100%;overflow: hidden;}div.avatar-hotrokt {float: left;width: 110px;overflow: hidden;height: 99px;background: url(https://lh6.googleusercontent.com/-MCIxKaWyDww/U8pYUmTBYVI/AAAAAAAAIl0/TayEC1CaWUk/s0/bg_avatar.png) no-repeat;position: relative;}div.avatar-hotrokt img {float: left;margin-left: 13px;margin-top: 12px;width: 75px;height: 75px;border-radius: 100%;overflow: hidden;}div.info-hotrokt p {font: 13px arial;color: #333;margin: 0;padding: 0;line-height: 22px;}div.info-hotrokt span {color: #f55438;}&lt;/style&gt;</b:widget-setting>
+      <b:widget-setting name='content'>&lt;div class=&quot;boxhohokythuat&quot;&gt;
+    &lt;ul&gt;
+        &lt;li&gt;
+            &lt;div class=&quot;avatar-hotrokt&quot;&gt;
+                &lt;a title=&quot;Chát cùng Template&quot;&gt;
+                    &lt;img alt=&quot;Danh&quot; src=&quot;https://cdn1.iconfinder.com/data/icons/user-pictures/100/supportmale-128.png&quot; /&gt;
+                &lt;/a&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;info-hotrokt&quot;&gt;
+                &lt;p&gt;Kinh doanh -
+                    &lt;span&gt;Danh&lt;/span&gt;
+                &lt;/p&gt;
+                &lt;p&gt;Call: 0986.08.08.35&lt;/p&gt;
+                &lt;p&gt;
+                    &lt;a class=&quot;mar-right&quot; href=&quot;skype:dangietpy?chat&quot; title=&quot;Chát cùng Đăng Bu&amp;#768;i&quot;&gt;
+                        &lt;img alt=&quot;skype&quot; src=&quot;http://lh4.googleusercontent.com/-zjBm_8YgSJQ/VkKsKsxel8I/AAAAAAAAAfc/agduX_gZqZM/s1600/skype-icon.png&quot;
+                            style=&quot;float: left;margin-right: 10px;&quot; /&gt; &lt;/a&gt;
+                &lt;/p&gt;
+            &lt;/div&gt;
+        &lt;/li&gt;
+        &lt;li&gt;
+            &lt;div class=&quot;avatar-hotrokt&quot;&gt;
+                &lt;a&gt;
+                    &lt;img alt=&quot;Phan Danh&quot; src=&quot;http://icons.iconarchive.com/icons/guillendesign/variations-1/256/Notes-2-icon.png&quot; /&gt;
+                &lt;/a&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;info-hotrokt&quot;&gt;
+                &lt;p&gt;Kỹ thuật -
+                    &lt;span&gt;Phan Danh&lt;/span&gt;
+                &lt;/p&gt;
+                &lt;p&gt;Call: 0987.87.86.70 &lt;/p&gt;
+                &lt;p&gt;
+                    &lt;a class=&quot;mar-right&quot; href=&quot;skype:dangietpy?chat&quot;&gt;
+                        &lt;img alt=&quot;skype&quot; src=&quot;http://lh4.googleusercontent.com/-zjBm_8YgSJQ/VkKsKsxel8I/AAAAAAAAAfc/agduX_gZqZM/s1600/skype-icon.png&quot;
+                            style=&quot;float: left;margin-right: 10px;&quot; /&gt; &lt;/a&gt;
+                &lt;/p&gt;
+            &lt;/div&gt;
+        &lt;/li&gt;
+        &lt;li&gt;
+            &lt;div class=&quot;avatar-hotrokt&quot;&gt;
+                &lt;a&gt;
+                    &lt;img src=&quot;http://icons.iconarchive.com/icons/icons-land/vista-people/256/Occupations-Technical-Support-Representative-Male-Light-icon.png&quot; /&gt;
+                &lt;/a&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;info-hotrokt&quot;&gt;
+                &lt;p&gt;Tư vấn
+                &lt;/p&gt;
+                &lt;p&gt;Call: 0986.08.08.35&lt;/p&gt;
+                &lt;p&gt;
+                    &lt;a class=&quot;mar-right&quot; href=&quot;skype:dangietpy?chat&quot;&gt;
+                        &lt;img alt=&quot;skype&quot; src=&quot;http://lh4.googleusercontent.com/-zjBm_8YgSJQ/VkKsKsxel8I/AAAAAAAAAfc/agduX_gZqZM/s1600/skype-icon.png&quot;
+                            style=&quot;float: left;margin-right: 10px;&quot; /&gt; &lt;/a&gt;
+                &lt;/p&gt;
+            &lt;/div&gt;
+        &lt;/li&gt;
+    &lt;/ul&gt;
+&lt;/div&gt;
+&lt;style&gt;
+    div.boxhohokythuat {
+        float: left;
+        width: 100%;
+    }
+
+    div.boxhohokythuat li {
+        list-style: none;
+        float: left;
+        width: 313px;
+        margin-bottom: 15px;
+    }
+
+    div.boxhohokythuat ul {
+        margin: 0;
+        padding: 0;
+    }
+
+    div#boxlienhehotrokt {
+        float: left;
+        width: 100%;
+        overflow: hidden;
+    }
+
+    div.avatar-hotrokt {
+        float: left;
+        width: 110px;
+        overflow: hidden;
+        height: 99px;
+        background: url(https://lh6.googleusercontent.com/-MCIxKaWyDww/U8pYUmTBYVI/AAAAAAAAIl0/TayEC1CaWUk/s0/bg_avatar.png) no-repeat;
+        position: relative;
+    }
+
+    div.avatar-hotrokt img {
+        float: left;
+        margin-left: 13px;
+        margin-top: 12px;
+        width: 75px;
+        height: 75px;
+        border-radius: 100%;
+        overflow: hidden;
+    }
+
+    div.info-hotrokt p {
+        font: 13px arial;
+        color: #333;
+        margin: 0;
+        padding: 0;
+        line-height: 22px;
+    }
+
+    div.info-hotrokt span {
+        color: #f55438;
+    }
+&lt;/style&gt;</b:widget-setting>
     </b:widget-settings>
     <b:includable id='main'>
   <!-- only display title if it's non-empty -->
@@ -5291,7 +6536,7 @@ $(function(){
   <b:include name='quickedit'/>
 </b:includable>
   </b:widget>
-  <b:widget id='HTML4' locked='false' title='' type='HTML'>
+  <b:widget id='HTML4' locked='false' title='7 Cam kết vàng' type='HTML'>
     <b:widget-settings>
       <b:widget-setting name='content'>&lt;style&gt;
 #HTML4{margin-top:10px;border:none!important;background:transparent!important}
@@ -5333,7 +6578,7 @@ $(function(){
   <b:include name='quickedit'/>
 </b:includable>
   </b:widget>
-  <b:widget id='HTML5' locked='false' title='' type='HTML'>
+  <b:widget id='HTML5' locked='false' title='Sản phẩm nổi bật' type='HTML'>
     <b:widget-settings>
       <b:widget-setting name='content'>&lt;div class=&#39;box news&#39;&gt;
 &lt;div class=&#39;right&#39;&gt;
@@ -5358,7 +6603,7 @@ document.write(&quot;&lt;script src=\&quot;/feeds/posts/default/-/Phone?max-resu
   <b:include name='quickedit'/>
 </b:includable>
   </b:widget>
-  <b:widget id='HTML6' locked='false' title='' type='HTML'>
+  <b:widget id='HTML6' locked='false' title='Khuyến mãi' type='HTML'>
     <b:widget-settings>
       <b:widget-setting name='content'>&lt;div class=&#39;box news&#39;&gt;
 &lt;div class=&#39;right&#39;&gt;
@@ -5385,7 +6630,7 @@ document.write(&quot;&lt;script src=\&quot;/feeds/posts/default/-/KM?max-results
   <b:include name='quickedit'/>
 </b:includable>
   </b:widget>
-  <b:widget id='HTML7' locked='false' title='' type='HTML'>
+  <b:widget id='HTML7' locked='false' title='Tin Tức' type='HTML'>
     <b:widget-settings>
       <b:widget-setting name='content'>&lt;div class=&#39;box news&#39;&gt;
 &lt;div class=&#39;right&#39;&gt;
@@ -5456,7 +6701,7 @@ document.write(&quot;&lt;script src=\&quot;/feeds/posts/default/-/Tin tư&amp;#7
 </div>
 <div>
 <h4>
-	DUNG COMPUtER</h4>
+	ACB Computer</h4>
 <ul>
 <li><a href=''>Giới thiệu</a></li>
 <li><a href=''>Tuyển dụng</a></li>
@@ -5470,9 +6715,9 @@ document.write(&quot;&lt;script src=\&quot;/feeds/posts/default/-/Tin tư&amp;#7
 <h4>
 	có thắc mắc</h4>
 <ul>
-<li style='line-height: 22px;'>Hỗ trợ mua hàng (9:00 - 20:30)   
+<li style='line-height: 22px;'>Hỗ trợ mua hàng (8:00 - 20:30)   
 	</li>
-<li style='line-height: 22px;'>Góp ý - khiếu nại (9:00 - 18:00)  
+<li style='line-height: 22px;'>Góp ý - khiếu nại (8:00 - 18:00)  
 	</li>
 <li style='line-height: 22px;'>Bảo hành sản phẩm (13:00 - 18:00)  
 	Thứ 2 - Thứ 7: </li>
@@ -5487,9 +6732,8 @@ document.write(&quot;&lt;script src=\&quot;/feeds/posts/default/-/Tin tư&amp;#7
 </style>
 <div class='container02'>
 <li style='display: block; font-size: 23px;color: #fff;margin: 0 auto;'>
-<a class='icon-net' href='https://www.facebook.com/1adsvn/' target='_blank'><i class='fa-facebook'/></a>
-<a class='icon-net' href='' target='_blank'><i class='fa fa-google-plus'/></a>
-<a class='icon-net' href='' target='_blank'><i class='fa fa-twitter'/></a>
+<a class='icon-net' href='https://www.facebook.com/Acbcomputer/' target='_blank'><i class='fa-facebook'/></a>
+<a class='icon-net' href='https://plus.google.com/106738694295789994583?hl=vi' target='_blank'><i class='fa fa-google-plus'/></a>
 <a class='icon-net' href='https://www.youtube.com/channel/UC4kFOLkKdS4sxaoYUFCVr0Q/videos' target='_blank'><i class='fa fa-youtube'/></a>
 </li>
 </div>
@@ -6376,7 +7620,7 @@ $(document).ready(function() {
 });
 //]]>
 function loadCSS(e, t, n) { &quot;use strict&quot;; var i = window.document.createElement(&quot;link&quot;); var o = t || window.document.getElementsByTagName(&quot;script&quot;)[0]; i.rel = &quot;stylesheet&quot;; i.href = e; i.media = &quot;only x&quot;; o.parentNode.insertBefore(i, o); setTimeout(function () { i.media = n || &quot;all&quot; }) }
-loadCSS(&quot;http://fonts.googleapis.com/css?family=Roboto&quot;);loadCSS(&quot;//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css&quot;);
+loadCSS(&quot;http://fonts.googleapis.com/css?family=Roboto&quot;);loadCSS(&quot;//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css&quot;);
 </script>
 
 
