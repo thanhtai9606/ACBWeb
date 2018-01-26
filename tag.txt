@@ -1,0 +1,166 @@
+pc
+    acb
+    game
+    all-in-one
+    cu
+pc-brand
+    dell
+    hp
+    khac
+pc
+    pentium
+    core-i3
+    core-i5
+    core-i7
+lap
+    dell
+    asus
+    acer
+    hp
+    toshiba
+power
+    xigmatek
+    seasonic
+    cosair
+    andyson
+case
+    aigo
+    infinity
+    sama
+    segotep
+usb-fan(fan)
+    adm
+    jonsbo
+    775
+    thuong
+vga
+    gigabyte
+    msi
+    asus
+    palit
+mouse
+    game
+    khac
+keyboard
+    game
+    khac
+disk
+    dvd-rom
+    dvd-write
+camera
+    kbvision
+    tplink
+    yoosee
+    dhcvi
+    khac
+dauthu
+    8kenh
+    4kenh
+    adapter
+    khac
+tvbox
+    android
+    hitech
+    vinabox
+    sgbox
+    khac
+lcd
+    samsung
+    philip
+    lg
+    nec
+    aoc
+    khac
+cpu
+    pentium
+    corei3
+    corei5
+    corei7
+    8
+    1151
+mainboard
+    gigabyte
+    asus
+    foxconn
+    msi
+apple
+    ipad
+    macbook
+    mac-mini
+    ipod
+    mac-air
+    imac
+    mac-pro
+    display
+wifi
+    tplink
+    lblink
+    usb
+    usb3g
+repeater
+    tplink
+    totolink
+    mercury
+    tenda
+    khac
+switch
+    5
+    8
+linh-tinh
+    kem-bam
+    usb-lan
+    hop-test
+    dau-noi
+    bo-chia
+printer
+    hp
+    cannon
+    samsung
+    cu
+muc-drum(.)
+    muc
+    drum
+    gat 
+    truc-tu 
+storage
+hdd 
+    seagate
+    kingston
+    hitachi
+    western
+    deluxe
+ssd
+    intel
+    kingston
+    toshiba
+ram
+    ddr4
+    ddr3
+    ddr2
+    adm
+portable
+    kingmax
+    kingston
+    khac
+speaker
+    bluetooth
+    usb
+    khac
+headphone
+    bluetooth
+    webcam
+    khac
+linh-tinh
+pk-laptop
+cable
+    hdmi
+    pci
+    sata
+    power
+service
+    usb3g
+    software
+    cai-win
+
+
+
