@@ -1,6 +1,73 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html expr:dir='data:blog.languageDirection' xmlns='http://www.w3.org/1999/xhtml' xmlns:b='http://www.google.com/2005/gml/b' xmlns:data='http://www.google.com/2005/gml/data' xmlns:expr='http://www.google.com/2005/gml/expr'>
+<b:if cond='data:blog.url == data:blog.homepageUrl'>
+ <script type='text/javascript'>
+ //<![CDATA[ 
+ imgr = new Array();
+ imgr[0] = "http://1.bp.blogspot.com/-7vDs5hMaDho/U268E2ecF4I/AAAAAAAADY8/RBHVTTuJrxc/w300-h140-c/no-image.png";
+ numposts1 = 5;
+ function removeHtmlTag(strx, chop) {
+ var s = strx.split("<");
+ for (var i = 0; i < s.length; i++)
+ if (s[i].indexOf(">") != -1) s[i] = s[i].substring(s[i].indexOf(">") + 1, s[i].length);
+ s = s.join("");
+ s = s.substring(0, chop - 1);
+ return s
+ }; 
+ function topnewpost(json) {
+ j = showRandomImg ? Math.floor((imgr.length + 1) * Math.random()) : 0;
+ img = new Array;
+ if (numposts1 <= json.feed.entry.length) maxpost = numposts1;
+ else maxpost = json.feed.entry.length;
+ for (var i = 0; i < maxpost; i++) {
+ var entry = json.feed.entry[i];
+ var tag = entry.category[0].term;
+ var posttitle = entry.title.$t;
+ var pcm;
+ var posturl;
+ if (i == json.feed.entry.length) break;
+ for (var k = 0; k < entry.link.length; k++)
+ if (entry.link[k].rel == "alternate") {
+ posturl = entry.link[k].href;
+ break
+ }
+ for (var k = 0; k < entry.link.length; k++)
+ if (entry.link[k].rel == "replies" && entry.link[k].type == "text/html") {
+ pcm = entry.link[k].title.split(" ")[0];
+ break
+ }
+ if ("content" in entry) var postcontent = entry.content.$t;
+ else if ("summary" in entry) var postcontent = entry.summary.$t;
+ else var postcontent = "";
+ postdate = entry.published.$t;
+ if (j > imgr.length - 1) j = 0;
+ img[i] = imgr[j];
+ s = postcontent;
+ a = s.indexOf("<img");
+ b = s.indexOf('src="', a);
+ c = s.indexOf('"', b + 5);
+ d = s.substr(b + 5, c - b - 5);
+ if (a != -1 && (b != -1 && (c != -1 && d != ""))) img[i] = d;
+ var month = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+ var month2 = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+ var day = postdate.split("-")[2].substring(0, 2);
+ var m = postdate.split("-")[1];
+ var y = postdate.split("-")[0];
+ for (var u2 = 0; u2 < month.length; u2++)
+ if (parseInt(m) == month[u2]) {
+ m = month2[u2];
+ break
+ }
+ var daystr = day + " " + m + " " + y;
+ var trtd = '<div class="scroll-item secondary-post col-post"><a class="hover_play_small" href="' + posturl + '"><img src="' + img[i] + '"></img></a><header><h3><a href="' + posturl + '">' + posttitle + "</a></h3></header></div>";
+ document.write(trtd);
+ j++
+ }
+ };
+ //]]>
+ </script>
+</b:if>
 <head>
 <meta content='initial-scale=1, width=device-width, maximum-scale=1, minimum-scale=1, user-scalable=no' name='viewport'/>
 <b:include data='blog' name='all-head-content'/>
@@ -52,6 +119,31 @@ body#layout .Blog .widget-content{height:18em!important}
 .post h1, .post h3 {}
 .post h1 a, .post h1 a:visited, .post h3 a, .post h3 a:visited {}
 .post h1 a:hover, .post h3 a:hover {}
+
+#topnewpost {
+ margin-bottom: 20px;
+ float: left;
+ width: 100%
+}
+.scroll-item {
+ width: 32.3333333%;
+ float: left;
+ margin-right: 1.5%;
+ position: relative;
+}
+.scroll-item a {
+ color: #fff;
+}
+.scroll-item header {
+ position: absolute;
+ padding: 5px 10px;
+ bottom: 4px;
+ background: rgba(2,2,2,0.72);
+ width: 100%;
+}
+.scroll-item h3 {
+ font-size: 17px;
+}
 ]]></b:skin>
 
 <style>
@@ -3178,243 +3270,243 @@ else if (typeof Prototype !== "undefined") Event.observe(window, "load", functio
                         <a href='/search/label/computer-new' title=''>Máy Mới</a>
                     </h2>
                     <li>
-                        <a href='#' title=''>ACB</a>
+                        <a href='/search/label/acb' title=''>ACB</a>
                     </li>
                     <li>
-                        <a href='#' title=''>Máy bộ chơi Game</a>
+                        <a href='/search/label/game' title=''>Máy bộ chơi Game</a>
                     </li>
                     <li>
-                        <a href='#' title=''>All in One</a>
+                        <a href='/search/label/all-in-one' title=''>All in One</a>
                     </li>
                     <li>
-                        <a href='#' title=''>Máy Cũ</a>
-                    </li>
-                </div>
-                <div class='submenu-col'>
-                    <h2 class='dungcpt-nsm-title'>
-                        <a href='/search/label/cpu' title=''>Thương hiệu
-                            <br/>
-                        </a>
-                    </h2>
-                    <li>
-                        <a href='#' title=''>Dell</a>
-                    </li>
-                    <li>
-                        <a href='#' title=''>HP</a>
-                    </li>
-                    <li>
-                        <a href='#' title=''>Khác</a>
+                        <a href='/search/label/may-cu' title=''>Máy Cũ</a>
                     </li>
                 </div>
                 <div class='submenu-col'>
                     <h2 class='dungcpt-nsm-title'>
-                        <a href='#' title=''>Theo bộ vi xử lý
+                        <a href='/search/label/brand' title=''>Thương hiệu
                             <br/>
                         </a>
                     </h2>
                     <li>
-                        <a href='#' title=''>Intel&#174; Pentium&#8482;</a>
+                        <a href='/search/label/dell' title=''>Dell</a>
                     </li>
                     <li>
-                        <a href='#' title=''>Intel&#174; Core&#8482; i3</a>
+                        <a href='/search/label/hp' title=''>HP</a>
                     </li>
                     <li>
-                        <a href='#' title=''>Intel&#174; Core&#8482; i5</a>
+                        <a href='/search/label/pc-khac' title=''>Khác</a>
+                    </li>
+                </div>
+                <div class='submenu-col'>
+                    <h2 class='dungcpt-nsm-title'>
+                        <a href='/search/label/pc' title=''>Theo bộ vi xử lý
+                            <br/>
+                        </a>
+                    </h2>
+                    <li>
+                        <a href='/search/label/pentium' title='Vi xử lý Pentium'>Intel&#174; Pentium&#8482;</a>
                     </li>
                     <li>
-                        <a href='#' title=''>Intel&#174; Core&#8482; i7</a>
+                        <a href='/search/label/core-i3' title='Vi xử lý CORE I3'>Intel&#174; Core&#8482; i3</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/core-i5' title='Vi xử lý CORE I5'>Intel&#174; Core&#8482; i5</a>
+                    </li>
+                    <li>
+                        <a href='/search/label/core-i7' title='Vi xử lý CORE I7'>Intel&#174; Core&#8482; i7</a>
                     </li>
                 </div>
             </ul>
         </li>
         <li>
-            <a href='#' title=''>
+            <a href='/search/label/laptop' title=''>
                 <i class='fa fa-laptop fa-lg'/> Laptop</a>
             <ul class='submenu3'>
                 <div class='submenu-col'>
                     <h2 class='dungcpt-nsm-title'>
-                        <a href='#' title=''>Thương hiệu</a>
+                        <a href='/search/label/lap-brand' title=''>Thương hiệu</a>
                     </h2>
                     <li>
-                        <a href='#' title=''>Dell</a>
+                        <a href='/search/label/dell' title=''>Dell</a>
                     </li>
                     <li>
-                        <a href='#' title=''>Asus</a>
+                        <a href='/search/label/asus' title=''>Asus</a>
                     </li>
                     <li>
-                        <a href='#' title=''>Acer</a>
+                        <a href='/search/label/acer' title=''>Acer</a>
                     </li>
                     <li>
-                        <a href='#' title=''>HP</a>
+                        <a href='/search/label/hp' title=''>HP</a>
                     </li>
                     <li>
-                        <a href='#' title=''>Toshiba</a>
+                        <a href='/search/label/toshiba' title=''>Toshiba</a>
                     </li>
                 </div>
             </ul>
         </li>
         <li>
-            <a href='#' title=''>
+            <a href='/search/label/linh-kien' title=''>
                 <i class='fa fa-desktop fa-lg'/> Linh kiện máy tính</a>
             <ul class='submenu4'>
                 <div class='submenu-col'>
                     <h2 class='dungcpt-nsm-title'>
-                        <a href='#' title=''>PSU - Nguồn vi tính</a>
+                        <a href='/search/label/power' title=''>PSU - Nguồn vi tính</a>
                     </h2>
                     <li>
-                        <a href='#' title=''>Nguồn Xigmatek</a>
+                        <a href='/search/label/xigmatek' title=''>Nguồn Xigmatek</a>
                     </li>
                     <li>
-                        <a href='#' title=''>Nguồn Seasonic</a>
+                        <a href='/search/label/seasonic' title=''>Nguồn Seasonic</a>
                     </li>
                     <li>
-                        <a href='#' title=''>Nguồn Cosair</a>
+                        <a href='/search/label/cosair' title=''>Nguồn Cosair</a>
                     </li>
                     <li>
-                        <a href='#' title=''>Nguồn Andyson - Acbel</a>
+                        <a href='/search/label/andyson' title=''>Nguồn Andyson - Acbel</a>
                     </li>
                   
                 </div>
                 <div class='submenu-col'>
                     <h2 class='dungcpt-nsm-title'>
-                        <a href='#' title=''>
+                        <a href='/search/label/case' title=''>
                             Case - Vỏ
                         </a>
                     </h2>
                     <li>
-                        <a href='#' title=''>Case Aigo</a>
+                        <a href='/search/label/aigo' title=''>Case Aigo</a>
                     </li>
                     <li>
-                        <a href='#' title=''>Case Infinity</a>
+                        <a href='/search/label/infinity' title=''>Case Infinity</a>
                     </li>
                     <li>
-                        <a href='#' title=''>Case SAMA</a>
+                        <a href='/search/label/sama' title=''>Case SAMA</a>
                     </li>
                     <li>
-                        <a href='#' title=''>Case Segotep - Erosi</a>
+                        <a href='/search/label/segotep' title=''>Case Segotep - Erosi</a>
                     </li>
                 </div>
                 <div class='submenu-col'>
                     <h2 class='dungcpt-nsm-title'>
-                        <a href='#' title=''>
+                        <a href='/search/label/usb-fan' title=''>
                             Usb - Fan
                         </a>
                     </h2>
                     <li>
-                        <a href='#' title=''>FAN CPU Intel/AMD</a>
+                        <a href='/search/label/fan-adm' title=''>FAN CPU Intel/AMD</a>
                     </li>
                     <li>
-                        <a href='#' title=''>FAN CPU JONSBO</a>
+                        <a href='/search/label/fan-jonsbo' title=''>FAN CPU JONSBO</a>
                     </li>
                     <li>
-                        <a href='#' title=''>FAN CPU 775/1155</a>
+                        <a href='/search/label/fan-775' title=''>FAN CPU 775/1155</a>
                     </li>
                     <li>
-                        <a href='#' title=''>FAN CPU Thường</a>
+                        <a href='/search/label/fan-thuong' title=''>FAN CPU Thường</a>
                     </li>
                 </div>
                 <div class='submenu-col'>
                     <h2 class='dungcpt-nsm-title'>
-                        <a href='#' title=''>
+                        <a href='/search/label/vga' title=''>
                             VGA - Card màn hình
                         </a>
                     </h2>
                     <li>
-                        <a href='#' title=''>VGA Gigabyte</a>
+                        <a href='/search/label/vga-gigabyte' title=''>VGA Gigabyte</a>
                     </li>
                     <li>
-                        <a href='#' title=''>VGA MSI</a>
+                        <a href='/search/label/vga-msi' title=''>VGA MSI</a>
                     </li>
                     <li>
-                        <a href='#' title=''>VGA Asus</a>
+                        <a href='/search/label/vga-asus' title=''>VGA Asus</a>
                     </li>
                     <li>
-                        <a href='#' title=''>VGA Palit</a>
+                        <a href='/search/label/vga-palit' title=''>VGA Palit</a>
                     </li>
                 </div>
                 <div class='submenu-col'>
                     <h2 class='dungcpt-nsm-title'>
-                        <a href='#' title=''>
+                        <a href='/search/label/mouse' title=''>
                            Chuột - Mouse
                         </a>
                     </h2>
                     <li>
-                        <a href='#' title=''>Chuột Game-Net</a>
+                        <a href='/search/label/mouse-game' title=''>Chuột Game-Net</a>
                     </li>
                     <li>
-                        <a href='#' title=''>Chuột Không Dây</a>
+                        <a href='/search/label/mouse-khac' title=''>Chuột Không Dây</a>
                     </li>
                 </div>
                 <div class='submenu-col'>
                     <h2 class='dungcpt-nsm-title'>
-                        <a href='#' title=''>
+                        <a href='/search/label/keyboard' title=''>
                            Bàn phím -Keyboard
                         </a>
                     </h2>
                     <li>
-                        <a href='#' title=''>Phím Game-Net</a>
+                        <a href='/search/label/keyboard-game' title=''>Phím Game-Net</a>
                     </li>
                     <li>
-                        <a href='#' title=''>Phím Không Dây</a>
+                        <a href='/search/label/keyboard-khac' title=''>Phím Không Dây</a>
                     </li>
                 </div>
               
                 <div class='submenu-col'>
                     <h2 class='dungcpt-nsm-title'>
-                        <a href='#' title=''>
+                        <a href='/search/label/disk' title=''>
                             Ổ CD - DVD
                         </a>
                     </h2>
                     <li>
-                        <a href='#' title=''>DVD Rom Sata</a>
+                        <a href='/search/label/disk-dvdrom' title=''>DVD Rom Sata</a>
                     </li>
                     <li>
-                        <a href='#' title=''>DVD - RW Sata</a>
+                        <a href='/search/label/disk-dvdwrite' title=''>DVD - RW Sata</a>
                     </li>
                 </div>
             </ul>
         </li>
         <li>
-            <a href='#' title=''>
+            <a href='/search/label/camera' title=''>
                 <i class='fa fa-video-camera fa-lg'/> Camera an ninh CCTV</a>
             <ul class='submenu1'>
                 <div class='submenu-col'>
                     <h2 class='dungcpt-nsm-title'>
-                        <a href='#' title=''>Ha&#771;ng sa&#777;n xuâ&#769;t</a>
+                        <a href='/search/label/cam-brand' title=''>Ha&#771;ng sa&#777;n xuâ&#769;t</a>
                     </h2>
                     <li>
-                        <a href='#' title=''>IP KBVision</a>
+                        <a href='/search/label/cam-kbvision' title=''>IP KBVision</a>
                     </li>
                     <li>
-                        <a href='#' title=''>IP TP-Link</a>
+                        <a href='/search/label/cam-tplink' title=''>IP TP-Link</a>
                     </li>
                     <li>
-                        <a href='#' title=''>IP YOOSEE</a>
+                        <a href='/search/label/cam-yoosee' title=''>IP YOOSEE</a>
                     </li>
                     <li>
-                        <a href='#' title=''>HDCVI</a>
+                        <a href='/search/label/cam-hdcvi' title=''>HDCVI</a>
                     </li>
                     <li>
-                        <a href='#' title=''>Khác</a>
+                        <a href='/search/label/cam-khac' title=''>Khác</a>
                     </li>
                 </div>
                 <div class='submenu-col'>
                     <h2 class='dungcpt-nsm-title'>
-                        <a href='#' title=''>
+                        <a href='/search/label/dauthu' title=''>
                             Đầu thu - Nguồn
                         </a>
                     </h2>
                     <li>
-                        <a href='#' title=''>Đầu thu 8 Kênh</a>
+                        <a href='/search/label/dauthu-8kenh' title=''>Đầu thu 8 Kênh</a>
                     </li>
                     <li>
-                        <a href='#' title=''>Đầu thu 4 Kênh</a>
+                        <a href='/search/label/dauthu-4kenh' title=''>Đầu thu 4 Kênh</a>
                     </li>
                     <li>
-                        <a href='#' title=''>Adapter</a>
+                        <a href='/search/label/dauthu-adapter' title=''>Adapter</a>
                     </li>
                     <li>
-                        <a href='#' title=''>Khác</a>
+                        <a href='/search/label/dauthu-khac' title=''>Khác</a>
                     </li>
                 </div>
             </ul>
@@ -3425,48 +3517,48 @@ else if (typeof Prototype !== "undefined") Event.observe(window, "load", functio
             <ul class='submenu1'>
                 <div class='submenu-col'>
                     <h2 class='dungcpt-nsm-title'>
-                        <a href='#' title=''>TVBox -TV Android</a>
+                        <a href='/search/label/tvbox' title=''>TVBox -TV Android</a>
                     </h2>
                     <li>
-                        <a href='#' title=''>ANDROI BOX Q8 4 ANTENG</a>
+                        <a href='/search/label/tvbox-android' title=''>ANDROI BOX Q8 4 ANTENG</a>
                     </li>
                     <li>
-                        <a href='#' title=''>ANDROI BOX SMART HI TECH</a>
+                        <a href='/search/label/tvbox-hitech' title=''>ANDROI BOX SMART HI TECH</a>
                     </li>
                     <li>
-                        <a href='#' title=''>ANDROI BOX VINABOX X2</a>
+                        <a href='/search/label/tvbox-vinabox' title=''>ANDROI BOX VINABOX X2</a>
                     </li>
                     <li>
-                        <a href='#' title=''>ANDROI BOX SG BOX</a>
+                        <a href='/search/label/tvbox-sgbox' title=''>ANDROI BOX SG BOX</a>
                     </li>
                     <li>
-                        <a href='#' title=''>Khác</a>
+                        <a href='/search/label/tvbox-khac' title=''>Khác</a>
                     </li>
                   
                 </div>
                 <div class='submenu-col'>
                     <h2 class='dungcpt-nsm-title'>
-                        <a href='#' title=''>
+                        <a href='/search/label/lcd' title=''>
                             LCD - Màn hình
                         </a>
                     </h2>
                     <li>
-                        <a href='#' title=''>LCD Samsung</a>
+                        <a href='/search/label/lcd-samsung' title=''>LCD Samsung</a>
                     </li>
                     <li>
-                        <a href='#' title=''>LCD Philips</a>
+                        <a href='/search/label/lcd-philip' title=''>LCD Philips</a>
                     </li>
                     <li>
-                        <a href='#' title=''>LCD LG</a>
+                        <a href='/search/label/lcd-lg' title=''>LCD LG</a>
                     </li>
                     <li>
-                        <a href='#' title=''>LCD NEC</a>
+                        <a href='/search/label/lcd-nec' title=''>LCD NEC</a>
                     </li>
                     <li>
-                        <a href='#' title=''>LCD AOC</a>
+                        <a href='/search/label/lcd-aoc' title=''>LCD AOC</a>
                     </li>
                     <li>
-                        <a href='#' title=''>Sản phẩm Khác</a>
+                        <a href='/search/label/lcd-khac' title=''>Sản phẩm Khác</a>
                     </li>
                 </div>
             </ul>
@@ -3477,44 +3569,44 @@ else if (typeof Prototype !== "undefined") Event.observe(window, "load", functio
             <ul class='submenu1'>
                 <div class='submenu-col'>
                     <h2 class='dungcpt-nsm-title'>
-                        <a href='#' title=''>CPU - vi xử lý </a>
+                        <a href='/search/label/cpu' title=''>CPU - vi xử lý </a>
                     </h2>
                     <li>
-                        <a href='#' title=''>Intel&#174; Pentium&#8482;</a>
+                        <a href='/search/label/cpu-petium' title=''>Intel&#174; Pentium&#8482;</a>
                     </li>
                     <li>
-                        <a href='#' title=''>Intel&#174; Core&#8482; i3</a>
+                        <a href='/search/label/cpu-corei3' title=''>Intel&#174; Core&#8482; i3</a>
                     </li>
                     <li>
-                        <a href='#' title=''>Intel&#174; Core&#8482; i5</a>
+                        <a href='/search/label/cpu-core-i5' title=''>Intel&#174; Core&#8482; i5</a>
                     </li>
                     <li>
-                        <a href='#' title=''>Intel&#174; Core&#8482; i7</a>
+                        <a href='/search/label/cpu-core-i7' title=''>Intel&#174; Core&#8482; i7</a>
                     </li>
                     <li>
-                        <a href='#' title=''>CPU Thế hệ 8</a>
+                        <a href='/search/label/cpu-8' title=''>CPU Thế hệ 8</a>
                     </li>
                     <li>
-                        <a href='#' title=''>CPU 1151</a>
+                        <a href='/search/label/cpu-1151' title=''>CPU 1151</a>
                     </li>
                 </div>
                 <div class='submenu-col'>
                     <h2 class='dungcpt-nsm-title'>
-                        <a href='#' title=''>
+                        <a href='/search/label/mainboard' title=''>
                             Mainboard
                         </a>
                     </h2>
                     <li>
-                        <a href='#' title=''>Gigabyte</a>
+                        <a href='/search/label/main-gigabyte' title=''>Gigabyte</a>
                     </li>
                     <li>
-                        <a href='#' title=''>Asus</a>
+                        <a href='/search/label/main-asus' title=''>Asus</a>
                     </li>
                     <li>
-                        <a href='#' title=''>Foxconn</a>
+                        <a href='/search/label/main-foxconn' title=''>Foxconn</a>
                     </li>
                     <li>
-                        <a href='#' title=''>MSI</a>
+                        <a href='/search/label/main-msi' title=''>MSI</a>
                     </li>
                 </div>
             </ul>
@@ -3525,22 +3617,19 @@ else if (typeof Prototype !== "undefined") Event.observe(window, "load", functio
             <ul class='submenu2'>
                 <div class='submenu-col'>
                     <h2 class='dungcpt-nsm-title'>
-                        <a href='#' title=''>Ca&#769;c sa&#777;n phâ&#777;m Apple</a>
+                        <a href='/search/label/apple' title=''>Ca&#769;c sa&#777;n phâ&#777;m Apple</a>
                     </h2>
                     <li>
-                        <a href='#' title=''>Iphone</a>
+                        <a href='/search/label/apple-ipad' title=''>Ipad</a>
                     </li>
                     <li>
-                        <a href='#' title=''>Ipad</a>
+                        <a href='/search/label/apple-macbook' title=''>Macbook Pro</a>
                     </li>
                     <li>
-                        <a href='#' title=''>Macbook Pro</a>
+                        <a href='/search/label/apple-macmini' title=''>Mac mini</a>
                     </li>
                     <li>
-                        <a href='#' title=''>Mac mini</a>
-                    </li>
-                    <li>
-                        <a href='#' title=''>Ipod</a>
+                        <a href='/search/label/apple-ipod' title=''>Ipod</a>
                     </li>
                 </div>
                 <div class='submenu-col1'>
@@ -3550,19 +3639,16 @@ else if (typeof Prototype !== "undefined") Event.observe(window, "load", functio
                         </a>
                     </span>
                     <li>
-                        <a href='#' title=''>The New Macbook</a>
+                        <a href='/search/label/apple-macair' title=''>Macbook Air</a>
                     </li>
                     <li>
-                        <a href='#' title=''>Macbook Air</a>
+                        <a href='/search/label/apple-imac' title=''>iMac</a>
                     </li>
                     <li>
-                        <a href='#' title=''>iMac</a>
+                        <a href='/search/label/apple-macpro' title=''>Mac Pro</a>
                     </li>
                     <li>
-                        <a href='#' title=''>Mac Pro</a>
-                    </li>
-                    <li>
-                        <a href='#' title=''>Apple TC &amp; Display</a>
+                        <a href='/search/label/apple-display' title=''>Apple TC &amp; Display</a>
                     </li>
                 </div>
             </ul>
@@ -3573,82 +3659,76 @@ else if (typeof Prototype !== "undefined") Event.observe(window, "load", functio
             <ul class='submenu4'>
                 <div class='submenu-col'>
                     <h2 class='dungcpt-nsm-title'>
-                        <a href='#' title=''>Bộ Thu wifi</a>
+                        <a href='/search/label/wifi' title=''>Bộ Thu wifi</a>
                     </h2>
                     <li>
-                        <a href='#' title=''>TP -Link</a>
+                        <a href='/search/label/wifi-tplink' title=''>TP -Link</a>
                     </li>
                     <li>
-                        <a href='#' title=''>LB -Link</a>
+                        <a href='/search/label/wifi-lblink' title=''>LB -Link</a>
                     </li>
                     <li>
-                        <a href='#' title=''>Usb Wifi</a>
+                        <a href='/search/label/wifi-usb' title=''>Usb Wifi</a>
                     </li>
                     <li>
-                        <a href='#' title=''>USB 3G/4G</a>
+                        <a href='/search/label/wifi-usb3g' title=''>USB 3G/4G</a>
                     </li>
                 </div>
                 <div class='submenu-col'>
                     <h2 class='dungcpt-nsm-title'>
-                        <a href='#' title=''>
+                        <a href='/search/label/repeater' title=''>
                             Phát khuếch đại
                         </a>
                     </h2>
                     <li>
-                        <a href='#' title=''>TP-Link</a>
+                        <a href='/search/label/rep-tplink' title=''>TP-Link</a>
                     </li>
                     <li>
-                        <a href='#' title=''>Toto-Link</a>
+                        <a href='/search/label/rep-totolink' title=''>Toto-Link</a>
                     </li>
                     <li>
-                        <a href='#' title=''>Mercury</a>
+                        <a href='/search/label/rep-mercury' title=''>Mercury</a>
                     </li>
                     <li>
-                        <a href='#' title=''>Tenda</a>
+                        <a href='/search/label/rep-tenda' title=''>Tenda</a>
                     </li>
                     <li>
-                        <a href='#' title=''>Khác</a>
+                        <a href='/search/label/rep-khac' title=''>Khác</a>
                     </li>
                 </div>
                 <div class='submenu-col'>
                     <h2 class='dungcpt-nsm-title'>
-                        <a href='#' title=''>
+                        <a href='/search/label/switch' title=''>
                             Hub - Switch
                         </a>
                     </h2>
                     <li>
-                        <a href='#' title=''>Switch 5 Port TPLink</a>
+                        <a href='/search/label/switch-5' title=''>Switch 5 Port</a>
                     </li>
                     <li>
-                        <a href='#' title=''>Switch 8 Port TPLink</a>
-                    </li>
-                    <li>
-                        <a href='#' title=''>Switch 5 Port Tenda</a>
-                    </li>
-                    <li>
-                        <a href='#' title=''>Switch 8 Port Tenda</a>
+                        <a href='/search/label/switch-8' title=''>Switch 8 Port</a>
                     </li>
                 </div>
                 <div class='submenu-col'>
                     <h2 class='dungcpt-nsm-title'>
-                        <a href='#' title=''>
+                        <a href='/search/label/linhtinh' title=''>
                             Khác
                         </a>
                     </h2>
                     <li>
-                        <a href='#' title=''>Kiềm bấm mạng</a>
+                        <a href='/search/label/kiembam' title=''>Kiềm bấm mạng</a>
                     </li>
                     <li>
-                        <a href='#' title=''>USB ra Lan</a>
+                        <a href='/search/label/usb-lan' title=''>USB ra Lan</a>
                     </li>
                     <li>
-                        <a href='#' title=''>Hộp Test mạng</a>
+                        <a href='/search/label/hoptest' title=''>Hộp Test mạng</a>
                     </li>
                     <li>
-                        <a href='#' title=''>Đầu nối mạng</a>
+                        <a href='/search/label/daunoi' title=''>Đầu nối mạng</a>
                     </li>
                     <li>
-                        <a href='#' title=''>Bộ chia tín hiệu</a>
+                        <a href='/search/label/bochia' title=''>Bộ chia tín hiệu</a>
                     </li>
                 </div>
             </ul>
@@ -3659,38 +3739,38 @@ else if (typeof Prototype !== "undefined") Event.observe(window, "load", functio
             <ul class='submenu'>
                 <div class='submenu-col'>
                     <h2 class='dungcpt-nsm-title'>
-                        <a href='/search/label/computer-new' title=''>Hãng sản xuất</a>
+                        <a href='/search/label/printer' title=''>Hãng sản xuất</a>
                     </h2>
                     <li>
-                        <a href='#' title=''>HP</a>
+                        <a href='/search/label/printer-hp' title=''>HP</a>
                     </li>
                     <li>
-                        <a href='#' title=''>Cannon</a>
+                        <a href='/search/label/printer-cannon' title=''>Cannon</a>
                     </li>
                     <li>
-                        <a href='#' title=''>Samsung</a>
+                        <a href='/search/label/printer-samsung' title=''>Samsung</a>
                     </li>
                     <li>
-                        <a href='#' title=''>Máy in cũ</a>
+                        <a href='/search/label/printer-cu' title=''>Máy in cũ</a>
                     </li>
                 </div>
                 <div class='submenu-col'>
                     <h2 class='dungcpt-nsm-title'>
-                        <a href='/search/label/cpu' title=''>
+                        <a href='/search/label/muc' title=''>
                             Hộp mực - DRUM
                         </a>
                     </h2>
                     <li>
-                        <a href='#' title=''>Các loại hộp mực</a>
+                        <a href='/search/label/muc' title=''>Các loại hộp mực</a>
                     </li>
                     <li>
-                        <a href='#' title=''>DRUM</a>
+                        <a href='/search/label/drum' title=''>DRUM</a>
                     </li>
                     <li>
-                        <a href='#' title=''>Gạt Lớn nhỏ</a>
+                        <a href='/search/label/gat' title=''>Gạt Lớn nhỏ</a>
                     </li>
                     <li>
-                        <a href='#' title=''>Trục từ</a>
+                        <a href='/search/label/truc-tu' title=''>Trục từ</a>
                     </li>
                     <li>
                         <a href='#' title=''>Khác</a>
@@ -5702,6 +5782,7 @@ document.write(fbcm);
 </div>
 </div>
 </div>
+
 <b:section class='sidebar' id='content2' showaddelement='yes'>
   <b:widget id='HTML10' locked='false' title='bộ' type='HTML'>
     <b:widget-settings>
